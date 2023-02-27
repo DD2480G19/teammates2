@@ -124,4 +124,17 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
                 .build());
         verifyCanAccess(submissionParams);
     }
+
+    @Test
+    public void testAccessControl_feedbackQuestionDoesNotExist_shouldThrowEntityNotFoundException() throws Exception {
+        String questionNumber = "999";
+        String[] submissionParams = new String[] {
+                Const.ParamsNames.FEEDBACK_QUESTION_ID, questionNumber,
+                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString()
+        };
+
+        ______TS("Question does not exist; should throw exception.");
+
+        verifyEntityNotFoundAcl(submissionParams);
+    }
 }
