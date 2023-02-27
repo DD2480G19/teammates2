@@ -1,41 +1,143 @@
-# TEAMMATES Developer Web Site
+<p align="center">
+    <a href="https://github.com/DD2480G19/teammates2/commits/master">
+        <img alt="Last Commit" src="https://img.shields.io/github/last-commit/DD2480G19/teammates2.svg?style=flat-square&logo=github&logoColor=white">
+    </a>
+    <a href="https://github.com/DD2480G19/teammates2/issues">
+        <img alt="Issues" src="https://img.shields.io/github/issues-raw/DD2480G19/teammates2.svg?style=flat-square&logo=github&logoColor=white">
+    </a>
+    <a href="https://github.com/DD2480G19/teammates2/pulls">
+        <img alt="Pull Requests" src="https://img.shields.io/github/issues-pr-raw/DD2480G19/teammates2.svg?style=flat-square&logo=github&logoColor=white">
+    </a>
+</p>
 
-[![GitHub Actions Build Status Component Tests](https://github.com/TEAMMATES/teammates/workflows/Component%20Tests/badge.svg)](https://github.com/TEAMMATES/teammates/actions)
-[![GitHub Actions Build Status E2E Tests](https://github.com/TEAMMATES/teammates/workflows/E2E%20Tests/badge.svg)](https://github.com/TEAMMATES/teammates/actions)
-[![Codecov Coverage Status](https://codecov.io/gh/TEAMMATES/teammates/branch/master/graph/badge.svg)](https://codecov.io/gh/TEAMMATES/teammates)
-[![License](https://img.shields.io/badge/license-GPLv2-blue.svg)](LICENSE)
+# Report for *Assignment #4: Issue resolution*
 
-TEAMMATES is a free online tool for managing peer evaluations and other feedback paths of your students.
-It is provided as a cloud-based service for educators/students and is currently used by hundreds of universities across the world.
+<img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/KTH_Royal_Institute_of_Technology_logo.svg/1200px-KTH_Royal_Institute_of_Technology_logo.svg.png" alt="KTH Logo" align="left" width="90" height="90" style="vertical-align:middle;margin:0px 15px">
+
+This is group 19's repository for *Assignment #4: Issue resolution* in the course DD2480 Software Engineering Fundamentals at KTH Royal Institute of Technology, Sweden. The assignment description states: "The goal of this project to realize the complexity of issue resolution (or refactoring, but henceforth we will use “issue”) in a real project. What is being graded is the process through which you carry out your work, the quality of your work, and your reflections on it. Note that even a partially resolved issue can give you maximal points, as long as it is well managed and documented.".
+
+## Project
+The chosen project on which to perform the assignment is [TEAMMATES](https://github.com/TEAMMATES/teammates). TEAMMATES is a free online tool for managing peer evaluations and other feedback paths of your students. It is provided as a cloud-based service for educators/students and is currently used by hundreds of universities across the world.
 
 <img src="src/web/assets/images/overview.png" width="600">
 
 This is the developer web site for TEAMMATES. **Click [here](http://teammatesv4.appspot.com/) to go to the TEAMMATES product website.**
 
-[**Documentation for Developers** :book:](https://teammates.github.io/teammates) |
-[Version History](https://github.com/TEAMMATES/teammates/milestones?direction=desc&sort=due_date&state=closed) |
-[Project Stats](https://www.openhub.net/p/teammatesonline)
+## Onboarding experience
+We chose to continue with the project from the previous assignment. This is the text about the onboarding from the previous report:
 
-## Interested to join TEAMMATES developer team?
+*"The onboarding was pretty straight forward. The project's README included an easily accessible URL to "Setting Up" instructions, and elaborate documentation on an external website. The repository also contained all documentation in a directory: `docs`. The project's dependencies required some of us to downgrade our Java version, however, the instructions to configure the project accordingly were clearly described in the documentation.*
 
-We welcome contributions from developers, especially students. Here are some resources:
-* [**Contributor Orientation Guide**](https://teammates.github.io/teammates/contributing-doc.html): This document describes what you need to know/do to become a contributor.
-* [**Project ideas page**](https://github.com/TEAMMATES/teammates/wiki): These are for those who would like to do a relatively bigger projects with TEAMMATES (e.g. summer internships).
+*The building process was run by first executing `./gradlew createConfigs`, then `./gradlew build`, which automatically installed the necessary components, without errors. If one wanted to install dependencies for front-end development, the steps for that were also clearly described in the documentation.*
 
-## Acknowledgements
+*Back-end tests were run by executing `./gradlew componentTests`. Thanks to gradle all component tests were run automatically, and when 635 tests had been run the testing was manually stopped. Of all tests, only 7 failed. Examples are failures that occurred due to lack of third-party dependencies (email services), and/or date/time tests that failed because they were run on a Swedish OS.*
 
-TEAMMATES team wishes to thank the following invaluable contributions:
-* [**School of Computing, National University of Singapore (NUS)**](http://www.comp.nus.edu.sg), for providing us with the infrastructure support to run the project.
-* [**Centre for Development of Teaching and Learning (CDTL)**](https://nus.edu.sg/cdtl) of NUS, for supporting us with several *Teaching Enhancement Grants* over the years.
-* **Learning Innovation Fund-Technology (LIF-T)** initiative of NUS, for funding us for the 2015-2018 period.
-* **Google Summer of Code** Program, for including TEAMMATES as a mentor organization in *GSoC2014*, *GSoC2015*, *GSoC2016*, *GSoC2017* and *GSoC2018* editions.
-* **Facebook Open Academy** Program, for including TEAMMATES as a mentor organization in FBOA 2016.
-* **Jet Brains**, for the [Intellij IDEA](https://www.jetbrains.com/idea/) licences
-* <img src="src/web/assets/images/yklogo.png" width="100"> [**YourKit LLC**](https://www.yourkit.com), for providing us with free licenses for the [YourKit Java Profiler](https://www.yourkit.com/java/profiler) (an industry leading profiler tool for Java applications).
-* <img src="src/web/assets/images/saucelabs.png" width="100"> [**SauceLabs**](https://saucelabs.com), for providing us with a free [Open Sauce account](https://saucelabs.com/open-source) for cross-browser testing.
+*In conclusion, the onboarding experience was smooth and we plan to continue with the project."*
 
-## Contacting us
+## Effort spent
+> ***P criterion 2: The contribution of each group member is documented. The work carried out is commensurate with the expected time spent (20–25 hours per person).***
 
-The best way to contact us is to [post a message in our issue tracker](https://github.com/TEAMMATES/teammates/issues/new). Our issue tracker doubles as a discussion forum. You can use it for things like asking questions about the project or requesting technical help.
+> For each team member, how much time was spent in
+> 1. plenary discussions/meetings;
+> 2. discussions within parts of the group;
+> 3. reading documentation;
+> 4. analyzing code/output;
+> 5. writing documentation;
+> 6. writing code;
+> 7. running code?
+> 
+> For setting up tools and libraries (step 4), enumerate all dependencies
+you took care of and where you spent your time, if that time exceeds
+30 minutes.
 
-Alternatively (less preferred), you can email us at **teammates@comp.nus.edu.sg**.
+> **From assignment description:**
+> Document your experience. Keep track of how your team spends its time.
+> 
+> Note: We might have to change format from a table if it doesn't look good when filling it in.
+
+Time spent for each team member and category [hours]:
+| Team member | 1 | 2 | 3 | 4 | 5 | 6 | 7 | In total |
+|-------------|---|---|---|---|---|---|---|----------|
+| <a href="https://github.com/edbag22"><img src="https://avatars.githubusercontent.com/u/78201117?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a> Edvin  | | | | | | | | |
+| <a href="https://github.com/gustafssonlinnea"><img src="https://avatars.githubusercontent.com/u/70338667?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a> Linnéa | | | | | | | | |
+| <a href="https://github.com/markusnewtonh"><img src="https://avatars.githubusercontent.com/u/61276335?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Markus | | | | | | | | |
+| <a href="https://github.com/ElHachem02"><img src="https://avatars.githubusercontent.com/u/100425207?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Peter  | | | | | | | | |
+| <a href="https://github.com/FalkWasTakena"><img src="https://avatars.githubusercontent.com/u/71826609?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Samuel | | | | | | | | |
+
+## Overview of issue(s) and work done.
+> Title:
+> URL:
+> Summary in one or two sentences
+> Scope (functionality and code affected).
+
+> **From assignment description:**
+> - Identify an issue you will work on. The issue should be open and have no assignee (or you should get in touch with the assignee to ensure that the work has not been done yet). Please register your issue(s) in the project sheet (see Canvas for the link). Note that each group must work on different issues!
+> - Register the task you are working on the spreadsheet (link is on Canvas). Create an account on the issue tracker of the project, and register yourself as an assignee of that task.
+Note: It is OK if multiple groups choose the same project, but they have to choose different issues/tasks. 
+
+## Requirements for the new feature or requirements affected by functionality being refactored
+> ***P criterion 4: Requirements related to the functionality are identified and described in a systematic way. Each requirement has a name (ID), title, and description. The description can be one paragraph per requirement.***
+
+> ***P+ criterion 3: Relevant test cases (existing tests and updated/new tests related to the refactored code) are traced to requirements.***
+
+> Optional (point 3): trace tests to requirements.
+
+> **From assignment description:**
+> Identify requirements related to the issue. If the requirements are not documented yet, try to describe them based on code reviews and existing test cases. Create a project plan for testing these requirements, and working on the issue.
+
+## Code changes
+> ***P criterion 5: Changes to the code and test suite are shown and documented, e.g., as a patch.***
+
+### Patch
+> ***P+ criterion 4: Your patch is clean in that it (a) removes but does not comment out obsolete code and (b) does not produce extraneous output that is not required for your task (such as debug output) and (c) does not add unnecessary whitespace changes (such as adding or removing empty lines).***
+
+> ***P+ criterion 5: Patches are accepted by the project, or considered for acceptance. (This requires a link to an accepted commit, or a discussion item.) Note: the patch must be submitted by the assignment deadline, but it may be accepted later. (Please notify us if this extra point is necessary for a P+.)***
+
+> (copy your changes or the add git command to show them)
+> `git diff ...`
+> Optional (point 4): the patch is clean.
+> Optional (point 5): considered for acceptance (passes all automated checks).
+
+## Test results
+> ***P criterion 6: Tests are automated, their outcome is documented, e.g., as a test log.***
+
+> Overall results with link to a copy or excerpt of the logs (before/after refactoring).
+
+> **From assignment description:**
+> Run the existing regression tests; make sure they succeed. If any tests fail, check if they may interfere
+with your task. ***Keep copies of the test logs.*** If you there is a problem with the existing tests that
+interferes with your task, document that as a new issue (in the issue tracker), and either try to resolve
+it, or change your task to a different issue, perhaps in a different project.
+
+## UML class diagram and its description
+> ***P criterion 7: Key features affected by the issue are shown in UML class diagrams (for refactorings: include before/after). Note: you do not have to show classes, fields, or methods that are not relevant, unless they help with the overall understanding. Typically, the diagram would contain 5–10 classes.*** 
+
+### Key changes/classes affected
+> ***P+ criterion 1: The architecture and purpose of the system are presented in an overview of about 1–1.5 pages; consider using a diagram. Note: If you manage to improve on existing documentation or fill a gap in the project here, please consider making your documentation available to the project; they may be grateful for it!***
+
+> ***P+ criterion 2: Updates in the source are put into context with the overall software architecture and discussed, relating them to design patterns and/or refactoring patterns.***
+
+> Optional (point 1): Architectural overview.
+> Optional (point 2): relation to design pattern(s).
+
+## Overall experience
+> ***P criterion 8: The overall work carried out, and experience gained, are documented. In particular, mention your experience about the given documentation/examples of the project, its tool framework, and the interaction within your team (using the Essence framework) and with the community of the project.***
+
+> ***P+ criterion 7: You have done something extraordinary that exceeds the scope of the assignment, and which you can be proud of.***
+
+> What are your main take-aways from this project? What did you learn?
+> How did you grow as a team, using the Essence standard to evaluate yourself?
+> Optional (point 6): How would you put your work in context with best software engineering practice?
+> Optional (point 7): Is there something special you want to mention here?
+
+> **From assignment description:**
+> If you were not able to finish all tasks, how much progress have you made? How much time do you think you would need to complete the task? 
+
+### Main take-aways
+
+### Essence evaluation
+> ***P+ criterion 6: You can argue critically about the benefits, drawbacks, and limitations of your work carried out, in the context of current software engineering practice, such as the SEMAT kernel (covering alphas other than Team/Way of Working).***
+
+> **From assignment description:**
+> Assess your team (p. 51 in the [Essence standard](https://www.omg.org/spec/Essence/1.2/PDF) v1.2) by evaluating the checklist on p. 52:
+> In what state are you in? Why? What are obstacles to reach the next state? How have you improved during the course, and where is more improvement possible?
