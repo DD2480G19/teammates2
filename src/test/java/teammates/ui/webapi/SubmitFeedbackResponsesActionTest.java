@@ -124,4 +124,23 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
                 .build());
         verifyCanAccess(submissionParams);
     }
+
+    @Test
+    public void testAccessControl_studentDoesNotExist_shouldThrowEntityNotFoundException() throws Exception{
+        int questionNumber = 1;
+        FeedbackSessionAttributes sessionInTestingWithoutStudent = typicalBundle.feedbackSessions.get("sessionInTestingWithoutStudent");
+        String feedbackSessionName = sessionInTestingWithoutStudent.getFeedbackSessionName();
+        String courseId = sessionInTestingWithoutStudent.getCourseId();
+        FeedbackQuestionAttributes qn1InSessionInTestingWithoutStudent = logic.getFeedbackQuestion(feedbackSessionName,
+                courseId, questionNumber);
+
+        String[] submissionParams = new String[] {
+                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSessionInTestingWithoutStudent.getId(),
+                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString()
+        };
+
+        ______TS("Student does not exist; should throw exception.");
+
+        verifyEntityNotFoundAcl(submissionParams);
+    }
 }
