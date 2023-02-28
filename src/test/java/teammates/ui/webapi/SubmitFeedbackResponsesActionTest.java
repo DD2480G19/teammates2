@@ -150,4 +150,23 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
         verifyEntityNotFoundAcl(submissionParams);
     }
+
+    @Test
+    public void testAccessControl_instructorDoesNotExist_shouldThrowEntityNotFoundException() throws Exception {
+        int questionNumber = 1;
+        FeedbackSessionAttributes sessionInTestingWithoutInstructor = typicalBundle.feedbackSessions.get("sessionInTestingWithoutInstructor");
+        String feedbackSessionName = sessionInTestingWithoutInstructor.getFeedbackSessionName();
+        String courseId = sessionInTestingWithoutInstructor.getCourseId();
+        FeedbackQuestionAttributes qn1InSessionInTestingWithoutInstructor = logic.getFeedbackQuestion(feedbackSessionName,
+                courseId, questionNumber);
+
+        String[] submissionParams = new String[] {
+                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSessionInTestingWithoutInstructor.getId(),
+                Const.ParamsNames.INTENT, Intent.INSTRUCTOR_SUBMISSION.toString()
+        };
+
+        ______TS("Instructor does not exist; should throw exception.");
+        
+        verifyEntityNotFoundAcl(submissionParams);
+    }
 }
