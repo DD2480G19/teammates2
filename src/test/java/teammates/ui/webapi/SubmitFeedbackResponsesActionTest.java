@@ -37,6 +37,19 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
     protected void testAccessControl() {
         // See each independent test case.
     }
+    
+    @Test
+    public void testExecute_feedbackQuestionDoesNotExist_shouldThrowEntityNotFoundException() throws Exception {
+        String questionNumber = "999";
+        String[] submissionParams = new String[] {
+                Const.ParamsNames.FEEDBACK_QUESTION_ID, questionNumber,
+                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString()
+        };
+
+        ______TS("Question does not exist; should throw exception.");
+
+        verifyEntityNotFound(submissionParams);
+    }
 
     @Test
     public void testAccessControl_instructorSubmissionPastEndTime_shouldAllowIfBeforeDeadline() throws Exception {
