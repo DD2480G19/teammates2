@@ -37,11 +37,11 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
     protected void testAccessControl() {
         // See each independent test case.
     }
-    
+
     @Test
     public void testExecute_feedbackQuestionDoesNotExist_shouldThrowEntityNotFoundException() throws Exception {
         String questionNumber = "999";
-        String[] submissionParams = new String[] {
+        String[] submissionParams = new String[]{
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, questionNumber,
                 Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString()
         };
@@ -67,7 +67,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
                 .withEndTime(newEndTime)
                 .build());
         loginAsInstructor(instructor1OfCourse1.getGoogleId());
-        String[] submissionParams = new String[] {
+        String[] submissionParams = new String[]{
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, qn4InSession1InCourse1.getId(),
                 Const.ParamsNames.INTENT, Intent.INSTRUCTOR_SUBMISSION.toString(),
         };
@@ -110,7 +110,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
                 .withEndTime(newEndTime)
                 .build());
         loginAsStudent(student1InCourse1.getGoogleId());
-        String[] submissionParams = new String[] {
+        String[] submissionParams = new String[]{
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
                 Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
         };
@@ -141,7 +141,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
     @Test
     public void testAccessControl_feedbackQuestionDoesNotExist_shouldThrowEntityNotFoundException() throws Exception {
         String questionNumber = "999";
-        String[] submissionParams = new String[] {
+        String[] submissionParams = new String[]{
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, questionNumber,
                 Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString()
         };
@@ -162,7 +162,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
                 feedbackSessionName,
                 courseId, questionNumber);
 
-        String[] submissionParams = new String[] {
+        String[] submissionParams = new String[]{
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSessionInTestingWithoutInstructor.getId(),
                 Const.ParamsNames.INTENT, Intent.INSTRUCTOR_SUBMISSION.toString()
         };
@@ -181,12 +181,31 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         FeedbackQuestionAttributes qn4InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
                 courseId, questionNumber);
 
-        String[] submissionParams = new String[] {
+        String[] submissionParams = new String[]{
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, qn4InSession1InCourse1.getId(),
                 Const.ParamsNames.INTENT, Intent.FULL_DETAIL.toString()
         };
 
         ______TS("Incorrect intent parameter; should throw exception.");
+
+        verifyHttpParameterFailureAcl(submissionParams);
+    }
+
+    @Test
+    public void testAccessControl_studentResultIntent_shouldThrowInvalidHttpParameterException() throws Exception {
+        int questionNumber = 4;
+        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
+        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
+        String courseId = session1InCourse1.getCourseId();
+        FeedbackQuestionAttributes qn4InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
+                courseId, questionNumber);
+
+        String[] submissionParams = new String[]{
+                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn4InSession1InCourse1.getId(),
+                Const.ParamsNames.INTENT, Intent.STUDENT_RESULT.toString()
+        };
+
+        ______TS("Student Result Intent; should throw exception.");
 
         verifyHttpParameterFailureAcl(submissionParams);
     }
