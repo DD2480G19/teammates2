@@ -1088,6 +1088,29 @@
       "isPublishedEmailEnabled": true,
       "studentDeadlines": {},
       "instructorDeadlines": {}
+    },
+    "sessionInTestingWithoutInstructor": {
+      "feedbackSessionName": "Normal feedback session name",
+      "courseId": "idOfTestingWithoutInstructor",
+      "creatorEmail": "instructor@null.tmt",
+      "instructions": "Please please fill in the following questions.",
+      "createdTime": "2013-03-20T23:59:00Z",
+      "startTime": "2013-06-01T22:00:00Z",
+      "endTime": "2026-04-28T22:00:00Z",
+      "sessionVisibleFromTime": "2013-03-20T22:00:00Z",
+      "resultsVisibleFromTime": "2026-04-29T22:00:00Z",
+      "timeZone": "Africa/Johannesburg",
+      "gracePeriod": 10,
+      "sentOpeningSoonEmail": true,
+      "sentOpenEmail": true,
+      "sentClosingEmail": false,
+      "sentClosedEmail": false,
+      "sentPublishedEmail": false,
+      "isOpeningEmailEnabled": true,
+      "isClosingEmailEnabled": true,
+      "isPublishedEmailEnabled": true,
+      "studentDeadlines": {},
+      "instructorDeadlines": {}
     }
   },
   "feedbackQuestions": {
@@ -1499,6 +1522,36 @@
         "INSTRUCTORS"
       ],
       "showRecipientNameTo": [
+        "INSTRUCTORS"
+      ]
+    },
+    "qn1InSessionInTestingWithoutInstructor": {
+      "feedbackSessionName": "Normal feedback session name",
+      "courseId": "idOfTestingWithoutInstructor",
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Instructor comments on the class"
+      },
+      "questionNumber": 1,
+      "giverType": "INSTRUCTORS",
+      "recipientType": "NONE",
+      "numberOfEntitiesToGiveFeedbackTo": -100,
+      "showResponsesTo": [
+        "RECEIVER",
+        "OWN_TEAM_MEMBERS",
+        "STUDENTS",
+        "INSTRUCTORS"
+      ],
+      "showGiverNameTo": [
+        "RECEIVER",
+        "OWN_TEAM_MEMBERS",
+        "STUDENTS",
+        "INSTRUCTORS"
+      ],
+      "showRecipientNameTo": [
+        "RECEIVER",
+        "OWN_TEAM_MEMBERS",
+        "STUDENTS",
         "INSTRUCTORS"
       ]
     }
