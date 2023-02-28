@@ -190,4 +190,23 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
         verifyHttpParameterFailureAcl(submissionParams);
     }
+
+    @Test
+    public void testAccessControl_instructorResultIntent_shouldThrowInvalidHttpParameterException() throws Exception {
+        int questionNumber = 4;
+        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
+        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
+        String courseId = session1InCourse1.getCourseId();
+        FeedbackQuestionAttributes qn4InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
+                courseId, questionNumber);
+
+        String[] submissionParams = new String[] {
+                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn4InSession1InCourse1.getId(),
+                Const.ParamsNames.INTENT, Intent.INSTRUCTOR_RESULT.toString()
+        };
+
+        ______TS("Incorrect intent parameter; should throw exception.");
+
+        verifyHttpParameterFailureAcl(submissionParams);
+    }
 }
