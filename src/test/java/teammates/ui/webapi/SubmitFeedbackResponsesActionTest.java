@@ -52,6 +52,18 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
     }
 
     @Test
+     public void testExecute_intentIsUnknown_shouldThrowInvalidHttpParameterException() throws Exception {
+         String intent = "Unknown intent";
+         String[] submissionParams = new String[] {
+                 Const.ParamsNames.INTENT, intent
+         };
+
+         ______TS("Intent is unknown; should throw exception.");
+
+         verifyHttpParameterFailure(submissionParams);
+     }
+
+    @Test
     public void testAccessControl_instructorSubmissionPastEndTime_shouldAllowIfBeforeDeadline() throws Exception {
         int questionNumber = 4;
         FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
