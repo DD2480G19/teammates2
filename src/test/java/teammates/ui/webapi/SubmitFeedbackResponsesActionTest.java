@@ -43,7 +43,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         String questionNumber = "999";
         String[] submissionParams = new String[] {
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, questionNumber,
-                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString()
+                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
         };
 
         ______TS("Question does not exist; should throw exception.");
@@ -61,7 +61,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
                 courseId, questionNumber);
         String[] submissionParams = new String[] {
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_RESULT.toString()
+                Const.ParamsNames.INTENT, Intent.STUDENT_RESULT.toString(),
         };
 
         ______TS("Intent is unknown; should throw exception.");
@@ -157,9 +157,10 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
     }
 
     @Test
-    public void testAccessControl_studentDoesNotExist_shouldThrowEntityNotFoundException() throws Exception{
+    public void testAccessControl_studentDoesNotExist_shouldThrowEntityNotFoundException() throws Exception {
         int questionNumber = 1;
-        FeedbackSessionAttributes sessionInTestingWithoutStudent = typicalBundle.feedbackSessions.get("sessionInTestingWithoutStudent");
+        FeedbackSessionAttributes sessionInTestingWithoutStudent = typicalBundle.feedbackSessions
+                .get("sessionInTestingWithoutStudent");
         String feedbackSessionName = sessionInTestingWithoutStudent.getFeedbackSessionName();
         String courseId = sessionInTestingWithoutStudent.getCourseId();
         FeedbackQuestionAttributes qn1InSessionInTestingWithoutStudent = logic.getFeedbackQuestion(feedbackSessionName,
@@ -167,7 +168,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
         String[] submissionParams = new String[] {
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSessionInTestingWithoutStudent.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString()
+                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
         };
 
         ______TS("Student does not exist; should throw exception.");
@@ -188,7 +189,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
         String[] submissionParams = new String[] {
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSessionInTestingWithoutInstructor.getId(),
-                Const.ParamsNames.INTENT, Intent.INSTRUCTOR_SUBMISSION.toString()
+                Const.ParamsNames.INTENT, Intent.INSTRUCTOR_SUBMISSION.toString(),
         };
 
         ______TS("Instructor does not exist; should throw exception.");
@@ -207,7 +208,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
         String[] submissionParams = new String[] {
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, qn4InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.FULL_DETAIL.toString()
+                Const.ParamsNames.INTENT, Intent.FULL_DETAIL.toString(),
         };
 
         ______TS("Incorrect intent parameter; should throw exception.");
@@ -223,14 +224,14 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         String courseId = session1InCourse1.getCourseId();
         FeedbackQuestionAttributes qn4InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
                 courseId, questionNumber);
-               
-        String[] submissionParams = new String[]{
+
+        String[] submissionParams = new String[] {
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, qn4InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_RESULT.toString()
+                Const.ParamsNames.INTENT, Intent.STUDENT_RESULT.toString(),
         };
-        
+
         ______TS("Student Result Intent; should throw exception.");
-        
+
         verifyHttpParameterFailureAcl(submissionParams);
     }
 
@@ -245,7 +246,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
         String[] submissionParams = new String[] {
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, qn4InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.INSTRUCTOR_RESULT.toString()
+                Const.ParamsNames.INTENT, Intent.INSTRUCTOR_RESULT.toString(),
         };
 
         ______TS("Incorrect intent parameter; should throw exception.");
