@@ -82,6 +82,36 @@ Note: It is OK if multiple groups choose the same project, but they have to choo
 
 > Optional (point 3): trace tests to requirements.
 
+In this section, we've tried to identify all untested requirements for the two methods related to the issue. The tables can be seen in the two  subsections below: 
+
+### Identified requirements for `checkSpecificAccessControl`
+| ID    | Title | Description |
+| ----- | ----- | ----------- |
+| cSAC1 | `checkSpecificAccessControl`: Exception when feedback question does not exist | The action should throw `EntityNotFoundException("The feedback question does not exist.")` when feedback question does not exist (i.e., `feedbackQuestion == null`).
+| cSAC2 | `checkSpecificAccessControl`: Exception when student does not exist | The action should throw `EntityNotFoundException("Student does not exist.")` when student does not exist (i.e.,  `studentAttributes == null`). |
+| cSAC3 | `checkSpecificAccessControl`: Exception when instructor does not exist | The action should throw `EntityNotFoundException("Instructor does not exist.")` when instructor does not exist (i.e.,  `instructorAttributes == null`). |
+| cSAC4 | `checkSpecificAccessControl`: Exception when student result intent | The action should throw `InvalidHttpParameterException("Invalid intent for this action")` when intent is student result (i.e.,  `intent == STUDENT_RESULT`). |
+| cSAC5 | `checkSpecificAccessControl`: Exception when intent is unknown | The action should throw `InvalidHttpParameterException("Unknown intent " + intent)` when intent is unknown (i.e.,  `intent != STUDENT_SUBMISSION`, `INSTRUCTOR_SUBMISSION`, `INSTRUCTOR_RESULT`, or `STUDENT_RESULT`). |
+| cSAC6 | `checkSpecificAccessControl`: Exception when student result intent | The action should throw `InvalidHttpParameterException("Invalid intent for this action")` when intent is instructor result (i.e.,  `intent == INSTRUCTOR_RESULT`). |
+
+### Identified requirements for `execute`
+| ID   | Title | Description |
+| ---- | ----- | ----------- |
+| ex01 | `execute`: Exception when feedback question does not exist | The action should throw `EntityNotFoundException("The feedback question does not exist.")` when feedback question does not exist (i.e., `feedbackQuestion == null`). |
+| ex02 | `execute`: If student submission, result is valid | If a student submits, the action should produce a valid JSON result (and not throw any exceptions). |
+| ex03 | `execute`: If student giver and not type `TEAMS`, `giverIndentifier` is set to student email | If giver is a student and the giver type is not `TEAMS`, `giverIdentifier` should be set to the student’s email. |
+| ex04 | `execute`: If student giver and type `TEAMS`, `giverIndentifier` is set to team name | If giver is a student and the giver type is `TEAMS`, `giverIdentifier` should be set to the team name. |
+| ex05 | `execute`: Exception when intent is unknown | The action should throw `InvalidHttpParameterException("Unknown intent " + intent)` when intent is unknown (i.e.,  `intent != STUDENT_SUBMISSION` or `INSTRUCTOR_SUBMISSION`). |
+| ex06 | `execute`: Exception when recipient is not valid for the question | The action should throw `InvalidOperationException("The recipient " + recipient + " is not a valid recipient of the question")` recipient is not valid for the question (i.e., `!recipientsOfTheQuestion.containsKey(recipient)`). |
+| ex07 | `execute`: If instructor submission, result is valid | If an instructor submits, the action should produce a valid JSON result (and not throw any exceptions). |
+| ex08 | `execute`: If existing responses for recipient, responses are updated | If there are existing responses for a recipient, the responses should be updated and reflected in the JSON result/database. |
+| ex09 | `execute`: If no existing responses for recipient, new responses are added | If there are no existing responses for a recipient, the new responses should just be added and reflected in the JSON result/database. |
+| ex10 | `execute`: If no responses in submission request, clear database | If there are no responses in the submission request (`submitRequest.getResponses()`), all previous responses from the giver for that question should be cleared.  <span style="color:red">*(Note: This is not reflected in the Json result!)*</span> |
+| ex11 | `execute`: If feedback responses are not valid, exception is thrown | If a feedback response is not valid (e.g., not compliant with the question format), an `InvalidHttpRequestBodyException` is thrown with a message related to the specific question. |
+| ex12 | `execute`: Number of recipients are the max possible | If the number of recipients specified by the question is equal to the max number of recipients (`numRecipients == Const.MAX_POSSIBLE_RECIPIENTS`), the number of recipients is set to the value specified by the submission (`recipientsOfTheQuestion.size()`). <span style="color:red">*(Note: This seems contrived and the purpose of the code is not clear. With this in mind, we skip this for now.)*</span> |
+| ex13 | `execute`: Number of recipients are greater than number of recipients for the submission | If the number of recipients specified by the question is larger the the number of recipients specified by the submission (`numRecipients > recipientsOfTheQuestion.size()`), the number of recipients is set to the value specified by the submission (`recipientsOfTheQuestion.size()`). <span style="color:red">*(Note: This seems contrived and the purpose of the code is not clear. With this in mind, we skip this for now.)*</span> |
+
+
 > **From assignment description:**
 > Identify requirements related to the issue. If the requirements are not documented yet, try to describe them based on code reviews and existing test cases. Create a project plan for testing these requirements, and working on the issue.
 
