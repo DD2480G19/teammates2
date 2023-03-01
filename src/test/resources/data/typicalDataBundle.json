@@ -685,6 +685,15 @@
       "team": "Team 1.2",
       "section": "Section 2"
     },
+    "student6InCourse1": {
+      "googleId": "student6InCourse1",
+      "email": "student6InCourse1@gmail.tmt",
+      "course": "idOfTypicalCourse1",
+      "name": "student6 In Course1",
+      "comments": "",
+      "team": "Team 1.2",
+      "section": "Section 2"
+    },
     "student1InCourse2": {
       "googleId": "student1InCourse2",
       "email": "student1InCourse2@gmail.tmt",
@@ -1283,6 +1292,27 @@
       "giverType": "SELF",
       "recipientType": "NONE",
       "numberOfEntitiesToGiveFeedbackTo": -100,
+      "showResponsesTo": [
+        "INSTRUCTORS"
+      ],
+      "showGiverNameTo": [
+        "INSTRUCTORS"
+      ],
+      "showRecipientNameTo": [
+        "INSTRUCTORS"
+      ]
+    },
+    "qn6InSession1InCourse1": {
+      "feedbackSessionName": "First feedback session",
+      "courseId": "idOfTypicalCourse1",
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Are you guys enjoying teammates so far ?"
+      },
+      "questionNumber": 6,
+      "giverType": "TEAMS",
+      "recipientType": "STUDENTS",
+      "numberOfEntitiesToGiveFeedbackTo": 1,
       "showResponsesTo": [
         "INSTRUCTORS"
       ],

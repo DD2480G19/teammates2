@@ -1,16 +1,18 @@
 package teammates.ui.webapi;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Map;
 
 import org.testng.annotations.Test;
 
-import teammates.common.datatransfer.attributes.FeedbackQuestionAttributes;
-import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
-import teammates.common.datatransfer.attributes.InstructorAttributes;
-import teammates.common.datatransfer.attributes.StudentAttributes;
+import teammates.common.datatransfer.attributes.*;
+import teammates.common.datatransfer.questions.FeedbackTextResponseDetails;
 import teammates.common.util.Const;
 import teammates.common.util.TimeHelper;
+import teammates.ui.output.FeedbackResponseData;
+import teammates.ui.output.FeedbackResponsesData;
+import teammates.ui.request.FeedbackResponsesRequest;
 import teammates.ui.request.Intent;
 
 /**
@@ -36,6 +38,72 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
     @Override
     protected void testAccessControl() {
         // See each independent test case.
+    }
+
+    @Test
+    public void testExecute_studentSubmission_giverIdentifierShouldBeEmail() throws Exception{
+        int questionNumber = 1;
+        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
+        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
+        String courseId = session1InCourse1.getCourseId();
+        StudentAttributes student1InCourse1 = typicalBundle.students.get("student1InCourse1");
+        FeedbackQuestionAttributes qn1InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
+                courseId, questionNumber);
+
+        loginAsStudent(student1InCourse1.getGoogleId());
+        String[] submissionParams = new String[] {
+                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
+                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
+        };
+
+        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
+        FeedbackTextResponseDetails responseDetails = new FeedbackTextResponseDetails("Updated response details");
+        FeedbackResponsesRequest.FeedbackResponseRequest responseRequest = new FeedbackResponsesRequest.FeedbackResponseRequest(
+                student1InCourse1.getEmail(), responseDetails);
+
+        responsesRequest.setResponses(Collections.singletonList(responseRequest));
+
+        SubmitFeedbackResponsesAction a = getAction(responsesRequest, submissionParams);
+        JsonResult result = getJsonResult(a);
+        FeedbackResponsesData responses = (FeedbackResponsesData) result.getOutput();
+        FeedbackResponseData actualResponse = responses.getResponses().get(0);
+
+        ______TS("Student submission; giverType should be email");
+
+        verifyGiverTypeIsStudentEmail(student1InCourse1, actualResponse);
+    }
+
+    @Test
+    public void testExecute_studentSubmission_giverIdentifierShouldBeTeamName() throws Exception{
+        int questionNumber = 6;
+        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
+        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
+        String courseId = session1InCourse1.getCourseId();
+        StudentAttributes student1InCourse1 = typicalBundle.students.get("student6InCourse1");
+        FeedbackQuestionAttributes teamFeedback = logic.getFeedbackQuestion(feedbackSessionName,
+                courseId, questionNumber);
+
+        loginAsStudent(student1InCourse1.getGoogleId());
+        String[] submissionParams = new String[] {
+                Const.ParamsNames.FEEDBACK_QUESTION_ID, teamFeedback.getId(),
+                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
+        };
+
+        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
+        FeedbackTextResponseDetails responseDetails = new FeedbackTextResponseDetails("Updated response details");
+        FeedbackResponsesRequest.FeedbackResponseRequest responseRequest = new FeedbackResponsesRequest.FeedbackResponseRequest(
+                student1InCourse1.getEmail(), responseDetails);
+
+        responsesRequest.setResponses(Collections.singletonList(responseRequest));
+
+        SubmitFeedbackResponsesAction a = getAction(responsesRequest, submissionParams);
+        JsonResult result = getJsonResult(a);
+        FeedbackResponsesData responses = (FeedbackResponsesData) result.getOutput();
+        FeedbackResponseData actualResponse = responses.getResponses().get(0);
+
+        ______TS("Student submission; giverType should be team name");
+
+        verifyGiverTypeIsTeamName(student1InCourse1, actualResponse);
     }
 
     @Test
@@ -252,4 +320,14 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
         verifyHttpParameterFailureAcl(submissionParams);
     }
+
+    private void verifyGiverTypeIsStudentEmail(StudentAttributes expected, FeedbackResponseData actual){
+        assertEquals(expected.getEmail(), actual.getGiverIdentifier());
+    }
+
+    private void verifyGiverTypeIsTeamName(StudentAttributes expected, FeedbackResponseData actual){
+        assertEquals(expected.getTeam(), actual.getGiverIdentifier());
+    }
+
 }
+
