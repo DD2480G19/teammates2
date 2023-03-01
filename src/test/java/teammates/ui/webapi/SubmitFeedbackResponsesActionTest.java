@@ -1,16 +1,24 @@
 package teammates.ui.webapi;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Map;
 
 import org.testng.annotations.Test;
 
 import teammates.common.datatransfer.attributes.FeedbackQuestionAttributes;
+import teammates.common.datatransfer.attributes.FeedbackResponseAttributes;
 import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
 import teammates.common.datatransfer.attributes.InstructorAttributes;
 import teammates.common.datatransfer.attributes.StudentAttributes;
+import teammates.common.datatransfer.questions.FeedbackTextResponseDetails;
 import teammates.common.util.Const;
+import teammates.common.util.JsonUtils;
+import teammates.common.util.StringHelper;
 import teammates.common.util.TimeHelper;
+import teammates.ui.output.FeedbackResponseData;
+import teammates.ui.output.FeedbackResponsesData;
+import teammates.ui.request.FeedbackResponsesRequest;
 import teammates.ui.request.Intent;
 
 /**
@@ -36,6 +44,43 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
     @Override
     protected void testAccessControl() {
         // See each independent test case.
+    }
+
+    @Test
+    public void testExecute_studentSubmission_shouldProduceValidResult() throws Exception {
+        int questionNumber = 1;
+        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
+        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
+        String courseId = session1InCourse1.getCourseId();
+        StudentAttributes student1InCourse1 = typicalBundle.students.get("student1InCourse1");
+        FeedbackQuestionAttributes qn1InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
+                courseId, questionNumber);
+
+        loginAsStudent(student1InCourse1.getGoogleId());
+        String[] submissionParams = new String[] {
+                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
+                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
+        };
+
+        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
+        FeedbackTextResponseDetails responseDetails = new FeedbackTextResponseDetails("Updated response details");
+        FeedbackResponsesRequest.FeedbackResponseRequest responseRequest = new FeedbackResponsesRequest
+                .FeedbackResponseRequest(student1InCourse1.getEmail(), responseDetails);
+
+        responsesRequest.setResponses(Collections.singletonList(responseRequest));
+
+        SubmitFeedbackResponsesAction a = getAction(responsesRequest, submissionParams);
+        JsonResult result = getJsonResult(a);
+        FeedbackResponsesData responses = (FeedbackResponsesData) result.getOutput();
+        FeedbackResponseData actualResponse = responses.getResponses().get(0);
+
+        FeedbackResponseAttributes expectedResponse = logic.getFeedbackResponse(qn1InSession1InCourse1.getId(),
+                student1InCourse1.getEmail(), student1InCourse1.getEmail());
+        expectedResponse.setResponseDetails(responseDetails);
+
+        ______TS("Successful student submission; should produce valid result.");
+
+        verifyFeedbackResponseEquals(expectedResponse, actualResponse);
     }
 
     @Test
@@ -157,6 +202,19 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
     }
 
     @Test
+    public void testAccessControl_feedbackQuestionDoesNotExist_shouldThrowEntityNotFoundException() throws Exception {
+        String questionNumber = "999";
+        String[] submissionParams = new String[] {
+                Const.ParamsNames.FEEDBACK_QUESTION_ID, questionNumber,
+                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
+        };
+
+        ______TS("Question does not exist; should throw exception.");
+
+        verifyEntityNotFoundAcl(submissionParams);
+    }
+
+    @Test
     public void testAccessControl_studentDoesNotExist_shouldThrowEntityNotFoundException() throws Exception {
         int questionNumber = 1;
         FeedbackSessionAttributes sessionInTestingWithoutStudent = typicalBundle.feedbackSessions
@@ -252,5 +310,16 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         ______TS("Incorrect intent parameter; should throw exception.");
 
         verifyHttpParameterFailureAcl(submissionParams);
+    }
+
+    private void verifyFeedbackResponseEquals(FeedbackResponseAttributes expected, FeedbackResponseData actual)
+            throws Exception {
+        assertEquals(expected.getId(), StringHelper.decrypt(actual.getFeedbackResponseId()));
+        assertEquals(expected.getGiver(), actual.getGiverIdentifier());
+        assertEquals(expected.getRecipient(), actual.getRecipientIdentifier());
+        assertEquals(expected.getResponseDetailsCopy().getAnswerString(), actual.getResponseDetails().getAnswerString());
+        assertEquals(expected.getResponseDetailsCopy().getQuestionType(), actual.getResponseDetails().getQuestionType());
+        assertEquals(JsonUtils.toJson(expected.getResponseDetailsCopy()),
+                JsonUtils.toJson(actual.getResponseDetails()));
     }
 }
