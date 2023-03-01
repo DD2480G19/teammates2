@@ -1,6 +1,7 @@
 package teammates.ui.webapi;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Map;
 
 import org.testng.annotations.Test;
@@ -9,9 +10,11 @@ import teammates.common.datatransfer.attributes.FeedbackQuestionAttributes;
 import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
 import teammates.common.datatransfer.attributes.InstructorAttributes;
 import teammates.common.datatransfer.attributes.StudentAttributes;
+import teammates.common.datatransfer.questions.FeedbackTextResponseDetails;
 import teammates.common.util.Const;
 import teammates.common.util.TimeHelper;
 import teammates.ui.request.Intent;
+import teammates.ui.request.FeedbackResponsesRequest;
 
 /**
  * SUT: {@link SubmitFeedbackResponsesAction}.
@@ -67,6 +70,31 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         ______TS("Intent is unknown; should throw exception.");
 
         verifyHttpParameterFailure(submissionParams);
+    }
+
+    @Test
+    public void testExecute_recipientIsNotValid_shouldThrowInvalidOperationException() throws Exception {
+        String InvalidRecipient = "invalid email";
+        int questionNumber = 1;
+        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
+        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
+        String courseId = session1InCourse1.getCourseId();
+        FeedbackQuestionAttributes qn1InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
+                courseId, questionNumber);
+        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
+        FeedbackTextResponseDetails responseDetails = new FeedbackTextResponseDetails("Updated response details");
+        FeedbackResponsesRequest.FeedbackResponseRequest responseRequest = new FeedbackResponsesRequest.FeedbackResponseRequest(
+                InvalidRecipient, responseDetails);
+        responsesRequest.setResponses(Collections.singletonList(responseRequest));
+
+        String[] submissionParams = new String[] {
+                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
+                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString()
+        };
+        
+        ______TS("Recipient is invalid; should throw exception.");
+
+        verifyInvalidOperation(responsesRequest, submissionParams);
     }
 
     @Test
