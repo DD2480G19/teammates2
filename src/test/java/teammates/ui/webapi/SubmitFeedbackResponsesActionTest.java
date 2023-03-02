@@ -168,6 +168,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
         String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
         String courseId = session1InCourse1.getCourseId();
+        StudentAttributes student1InCourse1 = typicalBundle.students.get("student1InCourse1");
         FeedbackQuestionAttributes qn1InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
                 courseId, questionNumber);
         FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
@@ -176,6 +177,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
                 new FeedbackResponsesRequest.FeedbackResponseRequest(invalidRecipient, responseDetails);
         responsesRequest.setResponses(Collections.singletonList(responseRequest));
 
+        loginAsStudent(student1InCourse1.getGoogleId());
         String[] submissionParams = new String[] {
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
                 Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
@@ -184,6 +186,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         ______TS("Recipient is invalid; should throw exception.");
 
         verifyInvalidOperation(responsesRequest, submissionParams);
+        logoutUser();
     }
 
     @Test
