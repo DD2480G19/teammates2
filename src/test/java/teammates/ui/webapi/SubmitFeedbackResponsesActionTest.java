@@ -3,6 +3,7 @@ package teammates.ui.webapi;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.testng.annotations.Test;
 
@@ -44,6 +45,52 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
     @Override
     protected void testAccessControl() {
         // See each independent test case.
+    }
+
+    @Test
+    public void testExecute_existingResponses_shouldBeUpdated() throws Exception {
+        int questionNumber = 1;
+        FeedbackSessionAttributes session = typicalBundle.feedbackSessions.get("session1InCourse1");
+        String feedbackSessionName = session.getFeedbackSessionName();
+        String courseId = session.getCourseId();
+        StudentAttributes student = typicalBundle.students.get("student2InCourse1");
+        FeedbackQuestionAttributes qn1InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
+                courseId, questionNumber);
+
+        loginAsStudent(student.getGoogleId());
+
+        String[] submissionParams = new String[] {
+                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
+                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
+        };
+        String existingAnswer = typicalBundle.feedbackResponses
+                .get("response2ForQ1S1C1").getResponseDetails().getAnswerString();
+
+        var existingResponses = logic.getFeedbackResponsesFromStudentOrTeamForQuestion(qn1InSession1InCourse1, student);
+        FeedbackResponseAttributes existingResponse = existingResponses.get(0);
+
+        ______TS("The existing response answer should be \"I'm cool'\"");
+        assertEquals(existingAnswer, existingResponse.getResponseDetails().getAnswerString());
+
+        // Modify the existing response
+        existingResponse.setResponseDetails(new FeedbackTextResponseDetails("I'm not cool"));
+
+        // Create a responses requestion with all existing responses
+        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
+        responsesRequest.setResponses(existingResponses.stream().map(r ->
+                new FeedbackResponsesRequest.FeedbackResponseRequest(
+                        existingResponse.getRecipient(),
+                        existingResponse.getResponseDetails()
+        )).collect(Collectors.toList()));
+
+        SubmitFeedbackResponsesAction a = getAction(responsesRequest, submissionParams);
+        JsonResult result = getJsonResult(a);
+        FeedbackResponsesData responses = (FeedbackResponsesData) result.getOutput();
+        FeedbackResponseData actualResponse = responses.getResponses().get(0);
+
+        ______TS("Existing response has been modified; should be reflected in the result.");
+        assertEquals(existingResponses.size(), responses.getResponses().size());
+        verifyFeedbackResponseEquals(existingResponse, actualResponse);
     }
 
     @Test
