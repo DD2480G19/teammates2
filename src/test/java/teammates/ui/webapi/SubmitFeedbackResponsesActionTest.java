@@ -128,6 +128,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         ______TS("Successful student submission; should produce valid result.");
 
         verifyFeedbackResponseEquals(expectedResponse, actualResponse);
+        logoutUser();
     }
 
     @Test
