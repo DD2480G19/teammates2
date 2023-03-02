@@ -79,11 +79,11 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testExecute_studentSubmission_giverIdentifierShouldBeTeamName() throws Exception {
-        int questionNumber = 6;
-        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
+        int questionNumber = 1;
+        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("sessionInTestingGiverType");
         String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
         String courseId = session1InCourse1.getCourseId();
-        StudentAttributes student1InCourse1 = typicalBundle.students.get("student6InCourse1");
+        StudentAttributes student1InCourse1 = typicalBundle.students.get("student1InTestingGiverType");
         FeedbackQuestionAttributes teamFeedback = logic.getFeedbackQuestion(feedbackSessionName,
                 courseId, questionNumber);
 
