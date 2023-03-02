@@ -163,3 +163,15 @@ it, or change your task to a different issue, perhaps in a different project.
 > **From assignment description:**
 > Assess your team (p. 51 in the [Essence standard](https://www.omg.org/spec/Essence/1.2/PDF) v1.2) by evaluating the checklist on p. 52:
 > In what state are you in? Why? What are obstacles to reach the next state? How have you improved during the course, and where is more improvement possible?
+
+## P+ points aimed for
+- *1. The architecture and purpose of the system are presented in an overview of about 1–1.5 pages; consider
+using a diagram. Note: If you manage to improve on existing documentation or fill a gap in the project
+here, please consider making your documentation available to the project; they may be grateful for it!*
+- *3. Relevant test cases (existing tests and updated/new tests related to the refactored code) are traced to
+requirements.*
+- *4. Your patch is clean in that it (a) removes but does not comment out obsolete code and (b) does not
+produce extraneous output that is not required for your task (such as debug output) and (c) does not add unnecessary whitespace changes (such as adding or removing empty lines).*
+- *6. You can argue critically about the benefits, drawbacks, and limitations of your work carried out, in
+the context of current software engineering practice, such as the [SEMAT kernel](http://semat.org/quick-reference-guide) (covering alphas other
+than Team/Way of Working).*
