@@ -115,6 +115,31 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
     }
 
     @Test
+    public void testExecute_recipientIsNotValid_shouldThrowInvalidOperationException() throws Exception {
+        String invalidRecipient = "invalid email";
+        int questionNumber = 1;
+        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
+        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
+        String courseId = session1InCourse1.getCourseId();
+        FeedbackQuestionAttributes qn1InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
+                courseId, questionNumber);
+        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
+        FeedbackTextResponseDetails responseDetails = new FeedbackTextResponseDetails("Updated response details");
+        FeedbackResponsesRequest.FeedbackResponseRequest responseRequest =
+                new FeedbackResponsesRequest.FeedbackResponseRequest(invalidRecipient, responseDetails);
+        responsesRequest.setResponses(Collections.singletonList(responseRequest));
+
+        String[] submissionParams = new String[] {
+                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
+                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
+        };
+
+        ______TS("Recipient is invalid; should throw exception.");
+
+        verifyInvalidOperation(responsesRequest, submissionParams);
+    }
+
+    @Test
     public void testAccessControl_instructorSubmissionPastEndTime_shouldAllowIfBeforeDeadline() throws Exception {
         int questionNumber = 4;
         FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
