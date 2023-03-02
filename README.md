@@ -170,3 +170,21 @@ it, or change your task to a different issue, perhaps in a different project.
 > **From assignment description:**
 > Assess your team (p. 51 in the [Essence standard](https://www.omg.org/spec/Essence/1.2/PDF) v1.2) by evaluating the checklist on p. 52:
 > In what state are you in? Why? What are obstacles to reach the next state? How have you improved during the course, and where is more improvement possible?
+
+In addition to the Team/Way of Working, the group’s work affects other alphas of the SEMAT essence:
+
+### Solution
+
+<a href="https://imgbb.com/"><img src="https://i.ibb.co/Cz9RtPX/req.png" alt="req" border="0"></a>
+
+The identification of requirements related to the issue that the group has worked on contributes to the work on the Requirements alpha. The benefit of this is that the purpose and the expected outcome of the work are made clear for the parties involved, which also helps to outline how the work should be done. However, in order to progress on the checklist for Requirements, all stakeholders should accept the identified requirement. That state is not reached since the requirements have not been reviewed by the project’s founders.
+
+<a href="https://imgbb.com/"><img src="https://i.ibb.co/sVPMh4Y/soft.png" alt="soft" border="0"></a>
+
+Regarding the Software System alpha, the group’s work covers the part where an architecture has been selected and testing has been implemented. The implemented tests meet the requirements and are demonstrable, which constitutes important progress. In order for the implementation to reach the last states of the alpha, the tests need to be reviewed by the project lead and integrated into the live version of the project's code base.
+
+### Endeavor
+
+<a href="https://imgbb.com/"><img src="https://i.ibb.co/3pkhcNr/work.png" alt="work" border="0"></a>
+
+This alpha, the Work alpha, is almost completely covered by the group’s work. The checklist’s different states can be easily tracked to related issues in the group’s project (Kanban) board on GitHub. Thanks to this, and great communication, the work throughout the assignment never halted. The limitations related to this alpha are foremost the state that requires the stakeholder(s) to accept the resulting software system, which is not yet reached. 
