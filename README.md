@@ -64,7 +64,7 @@ Time spent for each team member and category [hours]:
 | <a href="https://github.com/ElHachem02"><img src="https://avatars.githubusercontent.com/u/100425207?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Peter  | | | | | | | | |
 | <a href="https://github.com/FalkWasTakena"><img src="https://avatars.githubusercontent.com/u/71826609?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Samuel | | | | | | | | |
 
-## Overview of issue(s) and work done.
+## Overview of issue(s) and work done
 The issue we worked with is [***Add unit tests for `SubmitFeedbackResponsesAction` (#11826)***](https://github.com/TEAMMATES/teammates/issues/11826). The description of it is "`SubmitFeedbackResponsesAction` is by far the most important and the most used state-changing API of the system, and yet there are no unit tests for it". Functionality affected is (obviously) the testing of the class `SubmitFeedbackResponsesAction`. Code affected directly is `SubmitFeedbackResponsesActionTest`, and indirectly`SubmitFeedbackResponsesAction`. `typicalDataBundle` is also affected directly, which in turn affects a significant part of the other tests since we had to make sure they still work the same way after our modifications.
 
 
