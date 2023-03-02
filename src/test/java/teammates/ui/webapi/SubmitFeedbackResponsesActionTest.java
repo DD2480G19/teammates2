@@ -13,8 +13,8 @@ import teammates.common.datatransfer.attributes.StudentAttributes;
 import teammates.common.datatransfer.questions.FeedbackTextResponseDetails;
 import teammates.common.util.Const;
 import teammates.common.util.TimeHelper;
-import teammates.ui.request.Intent;
 import teammates.ui.request.FeedbackResponsesRequest;
+import teammates.ui.request.Intent;
 
 /**
  * SUT: {@link SubmitFeedbackResponsesAction}.
@@ -74,7 +74,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testExecute_recipientIsNotValid_shouldThrowInvalidOperationException() throws Exception {
-        String InvalidRecipient = "invalid email";
+        String invalidRecipient = "invalid email";
         int questionNumber = 1;
         FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
         String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
@@ -83,15 +83,15 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
                 courseId, questionNumber);
         FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
         FeedbackTextResponseDetails responseDetails = new FeedbackTextResponseDetails("Updated response details");
-        FeedbackResponsesRequest.FeedbackResponseRequest responseRequest = new FeedbackResponsesRequest.FeedbackResponseRequest(
-                InvalidRecipient, responseDetails);
+        FeedbackResponsesRequest.FeedbackResponseRequest responseRequest =
+                new FeedbackResponsesRequest.FeedbackResponseRequest(invalidRecipient, responseDetails);
         responsesRequest.setResponses(Collections.singletonList(responseRequest));
 
         String[] submissionParams = new String[] {
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString()
+                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
         };
-        
+
         ______TS("Recipient is invalid; should throw exception.");
 
         verifyInvalidOperation(responsesRequest, submissionParams);
