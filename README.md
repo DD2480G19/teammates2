@@ -64,16 +64,9 @@ Time spent for each team member and category [hours]:
 | <a href="https://github.com/ElHachem02"><img src="https://avatars.githubusercontent.com/u/100425207?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Peter  | | | | | | | | |
 | <a href="https://github.com/FalkWasTakena"><img src="https://avatars.githubusercontent.com/u/71826609?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Samuel | | | | | | | | |
 
-## Overview of issue(s) and work done.
-> Title:
-> URL:
-> Summary in one or two sentences
-> Scope (functionality and code affected).
+## Overview of issue(s) and work done
+The issue we worked with is [***Add unit tests for `SubmitFeedbackResponsesAction` (#11826)***](https://github.com/TEAMMATES/teammates/issues/11826). The description of it is "`SubmitFeedbackResponsesAction` is by far the most important and the most used state-changing API of the system, and yet there are no unit tests for it". Functionality affected is (obviously) the testing of the class `SubmitFeedbackResponsesAction`. Code affected directly is `SubmitFeedbackResponsesActionTest`, and indirectly`SubmitFeedbackResponsesAction`. `typicalDataBundle` is also affected directly, which in turn affects a significant part of the other tests since we had to make sure they still work the same way after our modifications.
 
-> **From assignment description:**
-> - Identify an issue you will work on. The issue should be open and have no assignee (or you should get in touch with the assignee to ensure that the work has not been done yet). Please register your issue(s) in the project sheet (see Canvas for the link). Note that each group must work on different issues!
-> - Register the task you are working on the spreadsheet (link is on Canvas). Create an account on the issue tracker of the project, and register yourself as an assignee of that task.
-Note: It is OK if multiple groups choose the same project, but they have to choose different issues/tasks. 
 
 ## Requirements for the new feature or requirements affected by functionality being refactored
 > ***P criterion 4: Requirements related to the functionality are identified and described in a systematic way. Each requirement has a name (ID), title, and description. The description can be one paragraph per requirement.***
