@@ -131,6 +131,44 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
     }
 
     @Test
+    public void testExecute_instructorSubmission_shouldProduceValidResult() throws Exception {
+        int questionNumber = 1;
+        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
+        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
+        String courseId = session1InCourse1.getCourseId();
+        InstructorAttributes instructor1InCourse1 = typicalBundle.instructors.get("instructor1OfCourse1");
+        FeedbackQuestionAttributes qn1InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
+                courseId, questionNumber);
+
+        loginAsInstructor(instructor1InCourse1.getGoogleId());
+        String[] submissionParams = new String[] {
+                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
+                Const.ParamsNames.INTENT, Intent.INSTRUCTOR_SUBMISSION.toString(),
+        };
+
+        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
+        FeedbackTextResponseDetails responseDetails = new FeedbackTextResponseDetails("Updated response details");
+        FeedbackResponsesRequest.FeedbackResponseRequest responseRequest = new FeedbackResponsesRequest
+                .FeedbackResponseRequest(instructor1InCourse1.getEmail(), responseDetails);
+
+        responsesRequest.setResponses(Collections.singletonList(responseRequest));
+
+        SubmitFeedbackResponsesAction a = getAction(responsesRequest, submissionParams);
+        JsonResult result = getJsonResult(a);
+        FeedbackResponsesData responses = (FeedbackResponsesData) result.getOutput();
+        FeedbackResponseData actualResponse = responses.getResponses().get(0);
+
+        FeedbackResponseAttributes expectedResponse = logic.getFeedbackResponse(qn1InSession1InCourse1.getId(),
+                instructor1InCourse1.getEmail(), instructor1InCourse1.getEmail());
+        expectedResponse.setResponseDetails(responseDetails);
+
+        ______TS("Successful instructor submission; should produce valid result.");
+
+        verifyFeedbackResponseEquals(expectedResponse, actualResponse);
+        logoutUser();
+    }
+
+    @Test
     public void testExecute_feedbackQuestionDoesNotExist_shouldThrowEntityNotFoundException() throws Exception {
         String questionNumber = "999";
         String[] submissionParams = new String[] {
@@ -175,7 +213,6 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         FeedbackResponsesRequest.FeedbackResponseRequest responseRequest =
                 new FeedbackResponsesRequest.FeedbackResponseRequest(invalidRecipient, responseDetails);
         responsesRequest.setResponses(Collections.singletonList(responseRequest));
-
         String[] submissionParams = new String[] {
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
                 Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
