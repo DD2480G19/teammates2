@@ -60,20 +60,13 @@ Time spent for each team member and category [hours]:
 |-------------|---|---|---|---|---|---|---|----------|
 | <a href="https://github.com/edbag22"><img src="https://avatars.githubusercontent.com/u/78201117?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a> Edvin  | | | | | | | | |
 | <a href="https://github.com/gustafssonlinnea"><img src="https://avatars.githubusercontent.com/u/70338667?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a> Linnéa | | | | | | | | |
-| <a href="https://github.com/markusnewtonh"><img src="https://avatars.githubusercontent.com/u/61276335?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Markus | | | | | | | | |
+| <a href="https://github.com/markusnewtonh"><img src="https://avatars.githubusercontent.com/u/61276335?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Markus |3.9|1.6|1.5|6.0|1.5|7.7|1|21.7|
 | <a href="https://github.com/ElHachem02"><img src="https://avatars.githubusercontent.com/u/100425207?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Peter  | | | | | | | | |
 | <a href="https://github.com/FalkWasTakena"><img src="https://avatars.githubusercontent.com/u/71826609?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Samuel | | | | | | | | |
 
-## Overview of issue(s) and work done.
-> Title:
-> URL:
-> Summary in one or two sentences
-> Scope (functionality and code affected).
+## Overview of issue(s) and work done
+The issue we worked with is [***Add unit tests for `SubmitFeedbackResponsesAction` (#11826)***](https://github.com/TEAMMATES/teammates/issues/11826). The description of it is "`SubmitFeedbackResponsesAction` is by far the most important and the most used state-changing API of the system, and yet there are no unit tests for it". Functionality affected is (obviously) the testing of the class `SubmitFeedbackResponsesAction`. Code affected directly is `SubmitFeedbackResponsesActionTest`, and indirectly`SubmitFeedbackResponsesAction`. `typicalDataBundle` is also affected directly, which in turn affects a significant part of the other tests since we had to make sure they still work the same way after our modifications.
 
-> **From assignment description:**
-> - Identify an issue you will work on. The issue should be open and have no assignee (or you should get in touch with the assignee to ensure that the work has not been done yet). Please register your issue(s) in the project sheet (see Canvas for the link). Note that each group must work on different issues!
-> - Register the task you are working on the spreadsheet (link is on Canvas). Create an account on the issue tracker of the project, and register yourself as an assignee of that task.
-Note: It is OK if multiple groups choose the same project, but they have to choose different issues/tasks. 
 
 ## Requirements for the new feature or requirements affected by functionality being refactored
 > ***P criterion 4: Requirements related to the functionality are identified and described in a systematic way. Each requirement has a name (ID), title, and description. The description can be one paragraph per requirement.***
@@ -84,6 +77,35 @@ Note: It is OK if multiple groups choose the same project, but they have to choo
 
 > **From assignment description:**
 > Identify requirements related to the issue. If the requirements are not documented yet, try to describe them based on code reviews and existing test cases. Create a project plan for testing these requirements, and working on the issue.
+
+In this section, we've tried to identify all untested requirements for the two methods related to the issue. The tables can be seen in the two  subsections below: 
+
+### Identified requirements for `checkSpecificAccessControl`
+| ID    | Title | Description | Issue |
+| ----- | ----- | ----------- | ----- |
+| cSAC1 | `checkSpecificAccessControl`: Exception when feedback question does not exist | The action should throw `EntityNotFoundException("The feedback question does not exist.")` when feedback question does not exist (i.e., `feedbackQuestion == null`). | [#21](https://github.com/DD2480G19/teammates2/issues/21) |
+| cSAC2 | `checkSpecificAccessControl`: Exception when student does not exist | The action should throw `EntityNotFoundException("Student does not exist.")` when student does not exist (i.e.,  `studentAttributes == null`). | [#22](https://github.com/DD2480G19/teammates2/issues/22) |
+| cSAC3 | `checkSpecificAccessControl`: Exception when instructor does not exist | The action should throw `EntityNotFoundException("Instructor does not exist.")` when instructor does not exist (i.e.,  `instructorAttributes == null`). | [#23](https://github.com/DD2480G19/teammates2/issues/23) |
+| cSAC4 | `checkSpecificAccessControl`: Exception when student result intent | The action should throw `InvalidHttpParameterException("Invalid intent for this action")` when intent is student result (i.e.,  `intent == STUDENT_RESULT`). | [#24](https://github.com/DD2480G19/teammates2/issues/24) |
+| cSAC5 | `checkSpecificAccessControl`: Exception when intent is unknown | The action should throw `InvalidHttpParameterException("Unknown intent " + intent)` when intent is unknown (i.e.,  `intent != STUDENT_SUBMISSION`, `INSTRUCTOR_SUBMISSION`, `INSTRUCTOR_RESULT`, or `STUDENT_RESULT`). | [#25](https://github.com/DD2480G19/teammates2/issues/25) |
+| cSAC6 | `checkSpecificAccessControl`: Exception when student result intent | The action should throw `InvalidHttpParameterException("Invalid intent for this action")` when intent is instructor result (i.e.,  `intent == INSTRUCTOR_RESULT`). | [#49](https://github.com/DD2480G19/teammates2/issues/49) |
+
+### Identified requirements for `execute`
+| ID   | Title | Description | Issue |
+| ---- | ----- | ----------- | ----- |
+| ex01 | `execute`: Exception when feedback question does not exist | The action should throw `EntityNotFoundException("The feedback question does not exist.")` when feedback question does not exist (i.e., `feedbackQuestion == null`). | [#29](https://github.com/DD2480G19/teammates2/issues/29) |
+| ex02 | `execute`: If student submission, result is valid | If a student submits, the action should produce a valid JSON result (and not throw any exceptions). | [#34](https://github.com/DD2480G19/teammates2/issues/34) |
+| ex03 | `execute`: If student giver and not type `TEAMS`, `giverIndentifier` is set to student email | If giver is a student and the giver type is not `TEAMS`, `giverIdentifier` should be set to the student’s email. | [#36](https://github.com/DD2480G19/teammates2/issues/36) |
+| ex04 | `execute`: If student giver and type `TEAMS`, `giverIndentifier` is set to team name | If giver is a student and the giver type is `TEAMS`, `giverIdentifier` should be set to the team name. | [#36](https://github.com/DD2480G19/teammates2/issues/36) |
+| ex05 | `execute`: Exception when intent is unknown | The action should throw `InvalidHttpParameterException("Unknown intent " + intent)` when intent is unknown (i.e.,  `intent != STUDENT_SUBMISSION` or `INSTRUCTOR_SUBMISSION`). | [#30](https://github.com/DD2480G19/teammates2/issues/30) |
+| ex06 | `execute`: Exception when recipient is not valid for the question | The action should throw `InvalidOperationException("The recipient " + recipient + " is not a valid recipient of the question")` recipient is not valid for the question (i.e., `!recipientsOfTheQuestion.containsKey(recipient)`). | [#31](https://github.com/DD2480G19/teammates2/issues/31) |
+| ex07 | `execute`: If instructor submission, result is valid | If an instructor submits, the action should produce a valid JSON result (and not throw any exceptions). | [#35](https://github.com/DD2480G19/teammates2/issues/35) |
+| ex08 | `execute`: If existing responses for recipient, responses are updated | If there are existing responses for a recipient, the responses should be updated and reflected in the JSON result/database. | [#37](https://github.com/DD2480G19/teammates2/issues/37) |
+| ex09 | `execute`: If no existing responses for recipient, new responses are added | If there are no existing responses for a recipient, the new responses should just be added and reflected in the JSON result/database. | [#42](https://github.com/DD2480G19/teammates2/issues/42) |
+| ex10 | `execute`: If no responses in submission request, clear database | If there are no responses in the submission request (`submitRequest.getResponses()`), all previous responses from the giver for that question should be cleared.  <span style="color:red">*(Note: This is not reflected in the Json result!)*</span> | [#45](https://github.com/DD2480G19/teammates2/issues/45) |
+| ex11 | `execute`: If feedback responses are not valid, exception is thrown | If a feedback response is not valid (e.g., not compliant with the question format), an `InvalidHttpRequestBodyException` is thrown with a message related to the specific question. | [#39](https://github.com/DD2480G19/teammates2/issues/39) |
+| ex12 | `execute`: Number of recipients are the max possible | If the number of recipients specified by the question is equal to the max number of recipients (`numRecipients == Const.MAX_POSSIBLE_RECIPIENTS`), the number of recipients is set to the value specified by the submission (`recipientsOfTheQuestion.size()`). <span style="color:red">*(Note: This seems contrived and the purpose of the code is not clear. With this in mind, we skip this for now.)*</span> |  |
+| ex13 | `execute`: Number of recipients are greater than number of recipients for the submission | If the number of recipients specified by the question is larger the the number of recipients specified by the submission (`numRecipients > recipientsOfTheQuestion.size()`), the number of recipients is set to the value specified by the submission (`recipientsOfTheQuestion.size()`). <span style="color:red">*(Note: This seems contrived and the purpose of the code is not clear. With this in mind, we skip this for now.)*</span> |  |
 
 ## Code changes
 > ***P criterion 5: Changes to the code and test suite are shown and documented, e.g., as a patch.***
@@ -141,3 +163,15 @@ it, or change your task to a different issue, perhaps in a different project.
 > **From assignment description:**
 > Assess your team (p. 51 in the [Essence standard](https://www.omg.org/spec/Essence/1.2/PDF) v1.2) by evaluating the checklist on p. 52:
 > In what state are you in? Why? What are obstacles to reach the next state? How have you improved during the course, and where is more improvement possible?
+
+## P+ points aimed for
+- *1. The architecture and purpose of the system are presented in an overview of about 1–1.5 pages; consider
+using a diagram. Note: If you manage to improve on existing documentation or fill a gap in the project
+here, please consider making your documentation available to the project; they may be grateful for it!*
+- *3. Relevant test cases (existing tests and updated/new tests related to the refactored code) are traced to
+requirements.*
+- *4. Your patch is clean in that it (a) removes but does not comment out obsolete code and (b) does not
+produce extraneous output that is not required for your task (such as debug output) and (c) does not add unnecessary whitespace changes (such as adding or removing empty lines).*
+- *6. You can argue critically about the benefits, drawbacks, and limitations of your work carried out, in
+the context of current software engineering practice, such as the [SEMAT kernel](http://semat.org/quick-reference-guide) (covering alphas other
+than Team/Way of Working).*
