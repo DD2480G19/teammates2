@@ -1286,6 +1286,27 @@
         "INSTRUCTORS"
       ]
     },
+    "qn6InSession1InCourse1": {
+      "feedbackSessionName": "First feedback session",
+      "courseId": "idOfTypicalCourse1",
+      "questionDetails": {
+        "questionText": "Numerical scale quesiton",
+        "questionType": "NUMSCALE"
+      },
+      "questionNumber": 6,
+      "giverType": "STUDENTS",
+      "recipientType": "SELF",
+      "numberOfEntitiesToGiveFeedbackTo": 1,
+      "showResponsesTo": [
+        "INSTRUCTORS"
+      ],
+      "showGiverNameTo": [
+        "INSTRUCTORS"
+      ],
+      "showRecipientNameTo": [
+        "INSTRUCTORS"
+      ]
+    },
     "team.feedback": {
       "feedbackSessionName": "Second feedback session",
       "courseId": "idOfTypicalCourse1",
