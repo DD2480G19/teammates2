@@ -77,10 +77,9 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         FeedbackResponseData actualResponse = responses.getResponses().get(0);
 
         ______TS("Student submission; giverType should be email");
-
         verifyGiverTypeIsStudentEmail(student1InCourse1, actualResponse);
     }
-    
+
     @Test
     public void testExecute_existingResponses_shouldBeUpdated() throws Exception {
         int questionNumber = 1;
@@ -492,7 +491,6 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
         verifyHttpParameterFailureAcl(submissionParams);
     }
-
 
     private void verifyGiverTypeIsStudentEmail(StudentAttributes expected, FeedbackResponseData actual) {
         assertEquals(expected.getEmail(), actual.getGiverIdentifier());
