@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.junit.Assert;
 import org.testng.annotations.Test;
 
 import teammates.common.datatransfer.attributes.FeedbackQuestionAttributes;
@@ -15,7 +14,6 @@ import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
 import teammates.common.datatransfer.attributes.InstructorAttributes;
 import teammates.common.datatransfer.attributes.StudentAttributes;
 import teammates.common.datatransfer.questions.FeedbackNumericalScaleResponseDetails;
-import teammates.common.datatransfer.questions.FeedbackRankRecipientsResponseDetails;
 import teammates.common.datatransfer.questions.FeedbackTextResponseDetails;
 import teammates.common.util.Const;
 import teammates.common.util.JsonUtils;
@@ -456,7 +454,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, question.getId(),
                 Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
         };
-        
+
         SubmitFeedbackResponsesAction a = getAction(request, submissionParams);
 
         ______TS("Valid responses should be in range [1, 5] with step size .5; new response is 0.9");
