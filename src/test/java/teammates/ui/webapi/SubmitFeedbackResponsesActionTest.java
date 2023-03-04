@@ -432,8 +432,10 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
     @Test
     public void testExecute_invalidResponse_shouldThrowInvalidHttpRequestBodyException() throws Exception {
         int questionNumber = 1;
-        var session = typicalBundle.feedbackSessions.get("session1InCourse4");
-        var student = typicalBundle.students.get("student1InCourse4");
+        var bundle = loadDataBundle("/FeedbackSessionQuestionTypeTest.json");
+        logic.persistDataBundle(bundle);
+        var session = bundle.feedbackSessions.get("numscaleSession");
+        var student = bundle.students.get("student1InCourse1");
         // Responses to this question should be in the range 1 <= x <= 5 with a step size of 0.5
         var question = logic.getFeedbackQuestion(session.getFeedbackSessionName(), session.getCourseId(), questionNumber);
         loginAsStudent(student.getGoogleId());
