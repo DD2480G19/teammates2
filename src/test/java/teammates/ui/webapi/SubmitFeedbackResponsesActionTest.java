@@ -356,6 +356,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
     /**
      * Create a {@code TestData} instance for a given student with a specified bundle.
      */
+    @SuppressWarnings("PMD.UnusedPrivateMethod") // This method will be needed when accessing other bundles.
     private TestData dataWithStudent(int questionNumber, String session, String student, DataBundle bundle) {
         TestData data = new TestData(questionNumber, session);
         data.student = bundle.students.get(student);
@@ -374,6 +375,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
     /**
      * Create a {@code TestData} instance for a given instructor with a specified bundle.
      */
+    @SuppressWarnings("PMD.UnusedPrivateMethod") // This method will be needed when accessing other bundles.
     private TestData dataWithInstructor(int questionNumber, String session, String instructor, DataBundle bundle) {
         TestData data = new TestData(questionNumber, session);
         data.instructor = bundle.instructors.get(instructor);
@@ -384,7 +386,6 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
      * Helper class to more easily handle neccessary test data.
      */
     private class TestData {
-        int questionNumber;
         FeedbackSessionAttributes session;
         String sessionName;
         String courseId;
@@ -393,7 +394,6 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         InstructorAttributes instructor;
 
         TestData(int questionNumber, String session) {
-            this.questionNumber = questionNumber;
             this.session = typicalBundle.feedbackSessions.get(session);
             sessionName = this.session.getFeedbackSessionName();
             courseId = this.session.getCourseId();
