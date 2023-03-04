@@ -12,6 +12,7 @@ import teammates.common.datatransfer.attributes.FeedbackResponseAttributes;
 import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
 import teammates.common.datatransfer.attributes.InstructorAttributes;
 import teammates.common.datatransfer.attributes.StudentAttributes;
+import teammates.common.datatransfer.questions.FeedbackResponseDetails;
 import teammates.common.datatransfer.questions.FeedbackTextResponseDetails;
 import teammates.common.util.Const;
 import teammates.common.util.JsonUtils;
@@ -103,12 +104,8 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         loginAsStudent(student1InCourse1.getGoogleId());
         String[] submissionParams = getParams(qn1InSession1InCourse1, Intent.STUDENT_SUBMISSION);
 
-        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
         FeedbackTextResponseDetails responseDetails = new FeedbackTextResponseDetails("Updated response details");
-        FeedbackResponsesRequest.FeedbackResponseRequest responseRequest = new FeedbackResponsesRequest
-                .FeedbackResponseRequest(student1InCourse1.getEmail(), responseDetails);
-
-        responsesRequest.setResponses(Collections.singletonList(responseRequest));
+        var responsesRequest = createSingletonResponsesRequest(student1InCourse1.getEmail(), responseDetails);
 
         SubmitFeedbackResponsesAction a = getAction(responsesRequest, submissionParams);
         JsonResult result = getJsonResult(a);
@@ -138,12 +135,8 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         loginAsInstructor(instructor1InCourse1.getGoogleId());
         String[] submissionParams = getParams(qn1InSession1InCourse1, Intent.INSTRUCTOR_SUBMISSION);
 
-        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
         FeedbackTextResponseDetails responseDetails = new FeedbackTextResponseDetails("Updated response details");
-        FeedbackResponsesRequest.FeedbackResponseRequest responseRequest = new FeedbackResponsesRequest
-                .FeedbackResponseRequest(instructor1InCourse1.getEmail(), responseDetails);
-
-        responsesRequest.setResponses(Collections.singletonList(responseRequest));
+        var responsesRequest = createSingletonResponsesRequest(instructor1InCourse1.getEmail(), responseDetails);
 
         SubmitFeedbackResponsesAction a = getAction(responsesRequest, submissionParams);
         JsonResult result = getJsonResult(a);
@@ -198,11 +191,9 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         StudentAttributes student1InCourse1 = typicalBundle.students.get("student1InCourse1");
         FeedbackQuestionAttributes qn1InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
                 courseId, questionNumber);
-        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
+
         FeedbackTextResponseDetails responseDetails = new FeedbackTextResponseDetails("Updated response details");
-        FeedbackResponsesRequest.FeedbackResponseRequest responseRequest =
-                new FeedbackResponsesRequest.FeedbackResponseRequest(invalidRecipient, responseDetails);
-        responsesRequest.setResponses(Collections.singletonList(responseRequest));
+        var responsesRequest = createSingletonResponsesRequest(invalidRecipient, responseDetails);
 
         loginAsStudent(student1InCourse1.getGoogleId());
         String[] submissionParams = getParams(qn1InSession1InCourse1, Intent.STUDENT_SUBMISSION);
@@ -412,5 +403,19 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, question.getId(),
                 Const.ParamsNames.INTENT, intent.toString(),
         };
+    }
+
+    /**
+     * Create a {@code FeedbackResponsesRequest} with a single response defined by {@code details}
+     * @param recipient
+     * @param details
+     * @return The newly create {@code FeedbackResponsesRequest}
+     */
+    private FeedbackResponsesRequest createSingletonResponsesRequest(String recipient, FeedbackResponseDetails details) {
+        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
+        var responseRequest = new FeedbackResponsesRequest.FeedbackResponseRequest(
+                recipient, details);
+        responsesRequest.setResponses(Collections.singletonList(responseRequest));
+        return responsesRequest;
     }
 }
