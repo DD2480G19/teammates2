@@ -101,6 +101,12 @@
       "email": "student2InCourse1@gmail.tmt",
       "readNotifications": {}
     },
+    "student1InCourse4": {
+      "googleId": "student1InCourse4",
+      "name": "student1 In Course4",
+      "email": "student1InCourse4@gmail.tmt",
+      "readNotifications": {}
+    },
     "student1InArchivedCourse": {
       "googleId": "student1InArchivedCourse",
       "name": "Student in Archived Course",
@@ -712,6 +718,15 @@
       "team": "Team 1.1</td></div>'\"",
       "section": "Section 1"
     },
+    "student1InCourse4": {
+      "googleId": "student1InCourse4",
+      "email": "student1InCourse4@gmail.tmt",
+      "course": "idOfTypicalCourse4",
+      "name": "student1 In Course4",
+      "comments": "comment for student1InCourse4",
+      "team": "Team 1.1",
+      "section": "Section 1"
+    },
     "student1InUnregisteredCourse": {
       "googleId": "",
       "email": "student1InUnregisteredCourse@gmail.tmt",
@@ -1158,7 +1173,6 @@
         "INSTRUCTORS"
       ]
     },
-
     "qn1InSession1InCourse1": {
       "feedbackSessionName": "First feedback session",
       "courseId": "idOfTypicalCourse1",
@@ -1276,27 +1290,6 @@
       "giverType": "SELF",
       "recipientType": "NONE",
       "numberOfEntitiesToGiveFeedbackTo": -100,
-      "showResponsesTo": [
-        "INSTRUCTORS"
-      ],
-      "showGiverNameTo": [
-        "INSTRUCTORS"
-      ],
-      "showRecipientNameTo": [
-        "INSTRUCTORS"
-      ]
-    },
-    "qn6InSession1InCourse1": {
-      "feedbackSessionName": "First feedback session",
-      "courseId": "idOfTypicalCourse1",
-      "questionDetails": {
-        "questionText": "Numerical scale quesiton",
-        "questionType": "NUMSCALE"
-      },
-      "questionNumber": 6,
-      "giverType": "STUDENTS",
-      "recipientType": "SELF",
-      "numberOfEntitiesToGiveFeedbackTo": 1,
       "showResponsesTo": [
         "INSTRUCTORS"
       ],
@@ -1569,6 +1562,27 @@
       "showResponsesTo": [],
       "showGiverNameTo": [],
       "showRecipientNameTo": []
+    },
+    "qn1InSession1InCourse4": {
+      "feedbackSessionName": "First feedback session",
+      "courseId": "idOfTypicalCourse4",
+      "questionDetails": {
+        "questionText": "Numerical scale quesiton",
+        "questionType": "NUMSCALE"
+      },
+      "questionNumber": 1,
+      "giverType": "STUDENTS",
+      "recipientType": "SELF",
+      "numberOfEntitiesToGiveFeedbackTo": 1,
+      "showResponsesTo": [
+        "INSTRUCTORS"
+      ],
+      "showGiverNameTo": [
+        "INSTRUCTORS"
+      ],
+      "showRecipientNameTo": [
+        "INSTRUCTORS"
+      ]
     },
     "qn1InSession1InTestingSanitizationCourse": {
       "feedbackSessionName": "Normal feedback session name",

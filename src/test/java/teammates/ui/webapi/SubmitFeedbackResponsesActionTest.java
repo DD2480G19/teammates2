@@ -433,25 +433,24 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testExecute_invalidResponse_shouldThrowInvalidHttpRequestBodyException() throws Exception {
-        int questionNumber = 6;
-        var session = typicalBundle.feedbackSessions.get("session1InCourse1");
-        var student = typicalBundle.students.get("student1InCourse1");
+        int questionNumber = 1;
+        var session = typicalBundle.feedbackSessions.get("session1InCourse4");
+        var student = typicalBundle.students.get("student1InCourse4");
         // Responses to this question should be in the range 1 <= x <= 5 with a step size of 0.5
         var question = logic.getFeedbackQuestion(session.getFeedbackSessionName(), session.getCourseId(), questionNumber);
-        //var question = typicalBundle.feedbackQuestions.get("qn6InSession1InCourse1");
         loginAsStudent(student.getGoogleId());
 
-        //var existingResponses = logic.getFeedbackResponsesFromStudentOrTeamForQuestion(question, student);
+        var existingResponses = logic.getFeedbackResponsesFromStudentOrTeamForQuestion(question, student);
         var badDetails = new FeedbackNumericalScaleResponseDetails();
         badDetails.setAnswer(0.9);
-        var newResponses = Collections.singletonList(
+        existingResponses.add(
                 FeedbackResponseAttributes.builder(question.getId(), student.getEmail(), student.getEmail())
                         .withCourseId(session.getCourseId())
                         .withFeedbackSessionName(session.getFeedbackSessionName())
                         .withResponseDetails(badDetails)
                         .build()
         );
-        var request = feedbackAttributesToRequest(newResponses);
+        var request = feedbackAttributesToRequest(existingResponses);
 
         String[] submissionParams = new String[] {
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, question.getId(),
@@ -462,6 +461,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
         ______TS("Valid responses should be in range [1, 5] with step size .5; new response is 0.9");
         assertThrows(InvalidHttpRequestBodyException.class, () -> a.execute());
+        logoutUser();
     }
 
     private void verifyFeedbackResponseEquals(FeedbackResponseAttributes expected, FeedbackResponseData actual)
