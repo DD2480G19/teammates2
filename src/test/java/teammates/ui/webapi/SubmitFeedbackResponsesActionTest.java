@@ -59,10 +59,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
         loginAsStudent(student.getGoogleId());
 
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
-        };
+        String[] submissionParams = getParams(qn1InSession1InCourse1, Intent.STUDENT_SUBMISSION);
         String existingAnswer = typicalBundle.feedbackResponses
                 .get("response2ForQ1S1C1").getResponseDetails().getAnswerString();
 
@@ -104,10 +101,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
                 courseId, questionNumber);
 
         loginAsStudent(student1InCourse1.getGoogleId());
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
-        };
+        String[] submissionParams = getParams(qn1InSession1InCourse1, Intent.STUDENT_SUBMISSION);
 
         FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
         FeedbackTextResponseDetails responseDetails = new FeedbackTextResponseDetails("Updated response details");
@@ -142,10 +136,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
                 courseId, questionNumber);
 
         loginAsInstructor(instructor1InCourse1.getGoogleId());
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.INSTRUCTOR_SUBMISSION.toString(),
-        };
+        String[] submissionParams = getParams(qn1InSession1InCourse1, Intent.INSTRUCTOR_SUBMISSION);
 
         FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
         FeedbackTextResponseDetails responseDetails = new FeedbackTextResponseDetails("Updated response details");
@@ -190,10 +181,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         String courseId = session1InCourse1.getCourseId();
         FeedbackQuestionAttributes qn1InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
                 courseId, questionNumber);
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_RESULT.toString(),
-        };
+        String[] submissionParams = getParams(qn1InSession1InCourse1, Intent.STUDENT_RESULT);
 
         ______TS("Intent is unknown; should throw exception.");
 
@@ -217,10 +205,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         responsesRequest.setResponses(Collections.singletonList(responseRequest));
 
         loginAsStudent(student1InCourse1.getGoogleId());
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
-        };
+        String[] submissionParams = getParams(qn1InSession1InCourse1, Intent.STUDENT_SUBMISSION);
 
         ______TS("Recipient is invalid; should throw exception.");
 
@@ -244,10 +229,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
                 .withEndTime(newEndTime)
                 .build());
         loginAsInstructor(instructor1OfCourse1.getGoogleId());
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn4InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.INSTRUCTOR_SUBMISSION.toString(),
-        };
+        String[] submissionParams = getParams(qn4InSession1InCourse1, Intent.INSTRUCTOR_SUBMISSION);
 
         ______TS("No selective deadline; should fail.");
 
@@ -287,10 +269,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
                 .withEndTime(newEndTime)
                 .build());
         loginAsStudent(student1InCourse1.getGoogleId());
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
-        };
+        String[] submissionParams = getParams(qn1InSession1InCourse1, Intent.STUDENT_SUBMISSION);
 
         ______TS("No selective deadline; should fail.");
 
@@ -338,10 +317,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         FeedbackQuestionAttributes qn1InSessionInTestingWithoutStudent = logic.getFeedbackQuestion(feedbackSessionName,
                 courseId, questionNumber);
 
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSessionInTestingWithoutStudent.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
-        };
+        String[] submissionParams = getParams(qn1InSessionInTestingWithoutStudent, Intent.STUDENT_SUBMISSION);
 
         ______TS("Student does not exist; should throw exception.");
 
@@ -359,10 +335,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
                 feedbackSessionName,
                 courseId, questionNumber);
 
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSessionInTestingWithoutInstructor.getId(),
-                Const.ParamsNames.INTENT, Intent.INSTRUCTOR_SUBMISSION.toString(),
-        };
+        String[] submissionParams = getParams(qn1InSessionInTestingWithoutInstructor, Intent.INSTRUCTOR_SUBMISSION);
 
         ______TS("Instructor does not exist; should throw exception.");
 
@@ -378,10 +351,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         FeedbackQuestionAttributes qn4InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
                 courseId, questionNumber);
 
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn4InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.FULL_DETAIL.toString(),
-        };
+        String[] submissionParams = getParams(qn4InSession1InCourse1, Intent.FULL_DETAIL);
 
         ______TS("Incorrect intent parameter; should throw exception.");
 
@@ -397,10 +367,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         FeedbackQuestionAttributes qn4InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
                 courseId, questionNumber);
 
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn4InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_RESULT.toString(),
-        };
+        String[] submissionParams = getParams(qn4InSession1InCourse1, Intent.STUDENT_RESULT);
 
         ______TS("Student Result Intent; should throw exception.");
 
@@ -416,10 +383,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         FeedbackQuestionAttributes qn4InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
                 courseId, questionNumber);
 
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn4InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.INSTRUCTOR_RESULT.toString(),
-        };
+        String[] submissionParams = getParams(qn4InSession1InCourse1, Intent.INSTRUCTOR_RESULT);
 
         ______TS("Incorrect intent parameter; should throw exception.");
 
@@ -435,5 +399,18 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         assertEquals(expected.getResponseDetailsCopy().getQuestionType(), actual.getResponseDetails().getQuestionType());
         assertEquals(JsonUtils.toJson(expected.getResponseDetailsCopy()),
                 JsonUtils.toJson(actual.getResponseDetails()));
+    }
+
+    /**
+     * Get the submission parameters for a given question and intent.
+     * @param question
+     * @param intent
+     * @return The submission parameters for a submit-feedback-responses-request
+     */
+    private String[] getParams(FeedbackQuestionAttributes question, Intent intent) {
+        return new String[] {
+                Const.ParamsNames.FEEDBACK_QUESTION_ID, question.getId(),
+                Const.ParamsNames.INTENT, intent.toString(),
+        };
     }
 }
