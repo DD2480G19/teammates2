@@ -80,11 +80,10 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         JsonResult result = getJsonResult(a);
         FeedbackResponsesData responses = (FeedbackResponsesData) result.getOutput();
         FeedbackResponseData actualResponse = responses.getResponses().get(0);
-
         ______TS("Student submission; giverType should be email");
         verifyGiverTypeIsStudentEmail(student1InCourse1, actualResponse);
     }
-    
+
     @Test
     public void testExecute_noResponsesInRequest_shouldClearExistingEntries() {
         TestData data = dataWithStudent(1, "session1InCourse1", "student1InCourse1");
@@ -400,10 +399,9 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         String[] submissionParams = getParams(data.question, Intent.INSTRUCTOR_RESULT);
 
         ______TS("Incorrect intent parameter; should throw exception.");
-
         verifyHttpParameterFailureAcl(submissionParams);
     }
-    
+
     @Test
     public void testExecute_invalidResponse_shouldThrowInvalidHttpRequestBodyException() throws Exception {
         var bundle = loadDataBundle("/FeedbackSessionQuestionTypeTest.json");
@@ -446,7 +444,6 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
     }
 
     private FeedbackResponsesRequest feedbackAttributesToRequest(List<FeedbackResponseAttributes> responses) {
-        // Create a responses requestion with all existing responses
         FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
         responsesRequest.setResponses(responses.stream().map(r ->
                 new FeedbackResponsesRequest.FeedbackResponseRequest(
@@ -455,13 +452,13 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         )).collect(Collectors.toList()));
         return responsesRequest;
     }
-    
-    private void verifyGiverTypeIsStudentEmail(StudentAttributes expected, FeedbackResponseData actual) {
-        assertEquals(expected.getEmail(), actual.getGiverIdentifier());
-    }
 
     private void verifyGiverTypeIsTeamName(StudentAttributes expected, FeedbackResponseData actual) {
         assertEquals(expected.getTeam(), actual.getGiverIdentifier());
+    }
+
+    private void verifyGiverTypeIsStudentEmail(StudentAttributes expected, FeedbackResponseData actual) {
+        assertEquals(expected.getEmail(), actual.getGiverIdentifier());
     }
 
     /**
