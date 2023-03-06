@@ -166,15 +166,17 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testExecute_studentSubmission_giverIdentifierShouldBeTeamName() throws Exception {
-        int questionNumber = 1;
-        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("sessionInTestingGiverType");
-        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
-        String courseId = session1InCourse1.getCourseId();
-        StudentAttributes student1InCourse1 = typicalBundle.students.get("student1InTestingGiverType");
+        int questionNumber = 3;
+        var bundle = loadDataBundle("/FeedbackSessionsLogicTest.json");
+        logic.persistDataBundle(bundle);
+        var session = bundle.feedbackSessions.get("gracePeriodSession");
+        var student = bundle.students.get("student1InCourse1");
+        String feedbackSessionName = session.getFeedbackSessionName();
+        String courseId = session.getCourseId();
         FeedbackQuestionAttributes teamFeedback = logic.getFeedbackQuestion(feedbackSessionName,
                 courseId, questionNumber);
 
-        loginAsStudent(student1InCourse1.getGoogleId());
+        loginAsStudent(student.getGoogleId());
         String[] submissionParams = new String[] {
                 Const.ParamsNames.FEEDBACK_QUESTION_ID, teamFeedback.getId(),
                 Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
@@ -183,7 +185,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
         FeedbackTextResponseDetails resDet = new FeedbackTextResponseDetails("Updated response details");
         FeedbackResponsesRequest.FeedbackResponseRequest resReq = new
-                FeedbackResponsesRequest.FeedbackResponseRequest(student1InCourse1.getEmail(), resDet);
+                FeedbackResponsesRequest.FeedbackResponseRequest(student.getTeam(), resDet);
 
         responsesRequest.setResponses(Collections.singletonList(resReq));
 
@@ -194,7 +196,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
         ______TS("Student submission; giverType should be team name");
 
-        verifyGiverTypeIsTeamName(student1InCourse1, actualResponse);
+        verifyGiverTypeIsTeamName(student, actualResponse);
     }
 
     @Test
