@@ -48,6 +48,35 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
     }
 
     @Test
+    public void testExecute_noResponsesInRequest_shouldClearExistingEntries() {
+        int questionNumber = 1;
+        FeedbackSessionAttributes session = typicalBundle.feedbackSessions.get("session1InCourse1");
+        String feedbackSessionName = session.getFeedbackSessionName();
+        String courseId = session.getCourseId();
+        StudentAttributes student = typicalBundle.students.get("student1InCourse1");
+        var question = logic.getFeedbackQuestion(feedbackSessionName, courseId, questionNumber);
+
+        loginAsStudent(student.getGoogleId());
+
+        String[] submissionParams = new String[] {
+                Const.ParamsNames.FEEDBACK_QUESTION_ID, question.getId(),
+                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
+        };
+
+        var existingResponses = logic.getFeedbackResponsesFromStudentOrTeamForQuestion(question, student);
+        assertFalse("There should be existing responses in the datase.", existingResponses.isEmpty());
+
+        // Create a responses requestion with all existing responses
+        FeedbackResponsesRequest emptyResponsesRequest = new FeedbackResponsesRequest();
+
+        SubmitFeedbackResponsesAction a = getAction(emptyResponsesRequest, submissionParams);
+        getJsonResult(a);
+
+        var newResponses = logic.getFeedbackResponsesFromStudentOrTeamForQuestion(question, student);
+        assertTrue("The updated responses should have been cleared.", newResponses.isEmpty());
+    }
+
+    @Test
     public void testExecute_existingResponses_shouldBeUpdated() throws Exception {
         int questionNumber = 1;
         FeedbackSessionAttributes session = typicalBundle.feedbackSessions.get("session1InCourse1");
