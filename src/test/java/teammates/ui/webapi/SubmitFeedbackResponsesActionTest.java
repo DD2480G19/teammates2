@@ -8,12 +8,14 @@ import java.util.stream.Collectors;
 
 import org.testng.annotations.Test;
 
+import teammates.common.datatransfer.DataBundle;
 import teammates.common.datatransfer.attributes.FeedbackQuestionAttributes;
 import teammates.common.datatransfer.attributes.FeedbackResponseAttributes;
 import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
 import teammates.common.datatransfer.attributes.InstructorAttributes;
 import teammates.common.datatransfer.attributes.StudentAttributes;
 import teammates.common.datatransfer.questions.FeedbackNumericalScaleResponseDetails;
+import teammates.common.datatransfer.questions.FeedbackResponseDetails;
 import teammates.common.datatransfer.questions.FeedbackTextResponseDetails;
 import teammates.common.util.Const;
 import teammates.common.util.JsonUtils;
@@ -52,21 +54,13 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testExecute_noResponsesInRequest_shouldClearExistingEntries() {
-        int questionNumber = 1;
-        FeedbackSessionAttributes session = typicalBundle.feedbackSessions.get("session1InCourse1");
-        String feedbackSessionName = session.getFeedbackSessionName();
-        String courseId = session.getCourseId();
-        StudentAttributes student = typicalBundle.students.get("student1InCourse1");
-        var question = logic.getFeedbackQuestion(feedbackSessionName, courseId, questionNumber);
+        TestData data = dataWithStudent(1, "session1InCourse1", "student1InCourse1");
 
-        loginAsStudent(student.getGoogleId());
+        loginAsStudent(data.student.getGoogleId());
 
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, question.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
-        };
+        String[] submissionParams = getParams(data.question, Intent.STUDENT_SUBMISSION);
 
-        var existingResponses = logic.getFeedbackResponsesFromStudentOrTeamForQuestion(question, student);
+        var existingResponses = logic.getFeedbackResponsesFromStudentOrTeamForQuestion(data.question, data.student);
         assertFalse("There should be existing responses in the datase.", existingResponses.isEmpty());
 
         // Create a responses requestion with all existing responses
@@ -75,30 +69,21 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         SubmitFeedbackResponsesAction a = getAction(emptyResponsesRequest, submissionParams);
         getJsonResult(a);
 
-        var newResponses = logic.getFeedbackResponsesFromStudentOrTeamForQuestion(question, student);
+        var newResponses = logic.getFeedbackResponsesFromStudentOrTeamForQuestion(data.question, data.student);
         assertTrue("The updated responses should have been cleared.", newResponses.isEmpty());
     }
 
     @Test
     public void testExecute_existingResponses_shouldBeUpdated() throws Exception {
-        int questionNumber = 1;
-        FeedbackSessionAttributes session = typicalBundle.feedbackSessions.get("session1InCourse1");
-        String feedbackSessionName = session.getFeedbackSessionName();
-        String courseId = session.getCourseId();
-        StudentAttributes student = typicalBundle.students.get("student2InCourse1");
-        FeedbackQuestionAttributes qn1InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
-                courseId, questionNumber);
+        TestData data = dataWithStudent(1, "session1InCourse1", "student2InCourse1");
 
-        loginAsStudent(student.getGoogleId());
+        loginAsStudent(data.student.getGoogleId());
 
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
-        };
+        String[] submissionParams = getParams(data.question, Intent.STUDENT_SUBMISSION);
         String existingAnswer = typicalBundle.feedbackResponses
                 .get("response2ForQ1S1C1").getResponseDetails().getAnswerString();
 
-        var existingResponses = logic.getFeedbackResponsesFromStudentOrTeamForQuestion(qn1InSession1InCourse1, student);
+        var existingResponses = logic.getFeedbackResponsesFromStudentOrTeamForQuestion(data.question, data.student);
         FeedbackResponseAttributes existingResponse = existingResponses.get(0);
 
         ______TS("The existing response answer should be \"I'm cool'\"");
@@ -127,34 +112,21 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testExecute_studentSubmission_shouldProduceValidResult() throws Exception {
-        int questionNumber = 1;
-        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
-        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
-        String courseId = session1InCourse1.getCourseId();
-        StudentAttributes student1InCourse1 = typicalBundle.students.get("student1InCourse1");
-        FeedbackQuestionAttributes qn1InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
-                courseId, questionNumber);
+        TestData data = dataWithStudent(1, "session1InCourse1", "student1InCourse1");
 
-        loginAsStudent(student1InCourse1.getGoogleId());
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
-        };
+        loginAsStudent(data.student.getGoogleId());
+        String[] submissionParams = getParams(data.question, Intent.STUDENT_SUBMISSION);
 
-        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
         FeedbackTextResponseDetails responseDetails = new FeedbackTextResponseDetails("Updated response details");
-        FeedbackResponsesRequest.FeedbackResponseRequest responseRequest = new FeedbackResponsesRequest
-                .FeedbackResponseRequest(student1InCourse1.getEmail(), responseDetails);
-
-        responsesRequest.setResponses(Collections.singletonList(responseRequest));
+        var responsesRequest = createSingletonResponsesRequest(data.student.getEmail(), responseDetails);
 
         SubmitFeedbackResponsesAction a = getAction(responsesRequest, submissionParams);
         JsonResult result = getJsonResult(a);
         FeedbackResponsesData responses = (FeedbackResponsesData) result.getOutput();
         FeedbackResponseData actualResponse = responses.getResponses().get(0);
 
-        FeedbackResponseAttributes expectedResponse = logic.getFeedbackResponse(qn1InSession1InCourse1.getId(),
-                student1InCourse1.getEmail(), student1InCourse1.getEmail());
+        FeedbackResponseAttributes expectedResponse = logic.getFeedbackResponse(data.question.getId(),
+                data.student.getEmail(), data.student.getEmail());
         expectedResponse.setResponseDetails(responseDetails);
 
         ______TS("Successful student submission; should produce valid result.");
@@ -165,34 +137,21 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testExecute_instructorSubmission_shouldProduceValidResult() throws Exception {
-        int questionNumber = 1;
-        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
-        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
-        String courseId = session1InCourse1.getCourseId();
-        InstructorAttributes instructor1InCourse1 = typicalBundle.instructors.get("instructor1OfCourse1");
-        FeedbackQuestionAttributes qn1InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
-                courseId, questionNumber);
+        TestData data = dataWithInstructor(1, "session1InCourse1", "instructor1OfCourse1");
 
-        loginAsInstructor(instructor1InCourse1.getGoogleId());
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.INSTRUCTOR_SUBMISSION.toString(),
-        };
+        loginAsInstructor(data.instructor.getGoogleId());
+        String[] submissionParams = getParams(data.question, Intent.INSTRUCTOR_SUBMISSION);
 
-        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
         FeedbackTextResponseDetails responseDetails = new FeedbackTextResponseDetails("Updated response details");
-        FeedbackResponsesRequest.FeedbackResponseRequest responseRequest = new FeedbackResponsesRequest
-                .FeedbackResponseRequest(instructor1InCourse1.getEmail(), responseDetails);
-
-        responsesRequest.setResponses(Collections.singletonList(responseRequest));
+        var responsesRequest = createSingletonResponsesRequest(data.instructor.getEmail(), responseDetails);
 
         SubmitFeedbackResponsesAction a = getAction(responsesRequest, submissionParams);
         JsonResult result = getJsonResult(a);
         FeedbackResponsesData responses = (FeedbackResponsesData) result.getOutput();
         FeedbackResponseData actualResponse = responses.getResponses().get(0);
 
-        FeedbackResponseAttributes expectedResponse = logic.getFeedbackResponse(qn1InSession1InCourse1.getId(),
-                instructor1InCourse1.getEmail(), instructor1InCourse1.getEmail());
+        FeedbackResponseAttributes expectedResponse = logic.getFeedbackResponse(data.question.getId(),
+                data.instructor.getEmail(), data.instructor.getEmail());
         expectedResponse.setResponseDetails(responseDetails);
 
         ______TS("Successful instructor submission; should produce valid result.");
@@ -216,16 +175,8 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testExecute_intentIsUnknown_shouldThrowInvalidHttpParameterException() throws Exception {
-        int questionNumber = 1;
-        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
-        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
-        String courseId = session1InCourse1.getCourseId();
-        FeedbackQuestionAttributes qn1InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
-                courseId, questionNumber);
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_RESULT.toString(),
-        };
+        TestData data = new TestData(1, "session1InCourse1");
+        String[] submissionParams = getParams(data.question, Intent.STUDENT_RESULT);
 
         ______TS("Intent is unknown; should throw exception.");
 
@@ -235,24 +186,13 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
     @Test
     public void testExecute_recipientIsNotValid_shouldThrowInvalidOperationException() throws Exception {
         String invalidRecipient = "invalid email";
-        int questionNumber = 1;
-        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
-        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
-        String courseId = session1InCourse1.getCourseId();
-        StudentAttributes student1InCourse1 = typicalBundle.students.get("student1InCourse1");
-        FeedbackQuestionAttributes qn1InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
-                courseId, questionNumber);
-        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
-        FeedbackTextResponseDetails responseDetails = new FeedbackTextResponseDetails("Updated response details");
-        FeedbackResponsesRequest.FeedbackResponseRequest responseRequest =
-                new FeedbackResponsesRequest.FeedbackResponseRequest(invalidRecipient, responseDetails);
-        responsesRequest.setResponses(Collections.singletonList(responseRequest));
+        TestData data = dataWithStudent(1, "session1InCourse1", "student1InCourse1");
 
-        loginAsStudent(student1InCourse1.getGoogleId());
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
-        };
+        FeedbackTextResponseDetails responseDetails = new FeedbackTextResponseDetails("Updated response details");
+        var responsesRequest = createSingletonResponsesRequest(invalidRecipient, responseDetails);
+
+        loginAsStudent(data.student.getGoogleId());
+        String[] submissionParams = getParams(data.question, Intent.STUDENT_SUBMISSION);
 
         ______TS("Recipient is invalid; should throw exception.");
 
@@ -262,24 +202,15 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testAccessControl_instructorSubmissionPastEndTime_shouldAllowIfBeforeDeadline() throws Exception {
-        int questionNumber = 4;
-        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
-        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
-        String courseId = session1InCourse1.getCourseId();
-        InstructorAttributes instructor1OfCourse1 = typicalBundle.instructors.get("instructor1OfCourse1");
-        FeedbackQuestionAttributes qn4InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
-                courseId, questionNumber);
+        TestData data = dataWithInstructor(4, "session1InCourse1", "instructor1OfCourse1");
 
         Instant newEndTime = TimeHelper.getInstantDaysOffsetFromNow(-2);
-        logic.updateFeedbackSession(FeedbackSessionAttributes.updateOptionsBuilder(feedbackSessionName, courseId)
+        logic.updateFeedbackSession(FeedbackSessionAttributes.updateOptionsBuilder(data.sessionName, data.courseId)
                 .withInstructorDeadlines(Map.of())
                 .withEndTime(newEndTime)
                 .build());
-        loginAsInstructor(instructor1OfCourse1.getGoogleId());
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn4InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.INSTRUCTOR_SUBMISSION.toString(),
-        };
+        loginAsInstructor(data.instructor.getGoogleId());
+        String[] submissionParams = getParams(data.question, Intent.INSTRUCTOR_SUBMISSION);
 
         ______TS("No selective deadline; should fail.");
 
@@ -288,8 +219,8 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         ______TS("After selective deadline; should fail.");
 
         Map<String, Instant> newInstructorDeadlines = Map.of(
-                instructor1OfCourse1.getEmail(), TimeHelper.getInstantDaysOffsetFromNow(-1));
-        logic.updateFeedbackSession(FeedbackSessionAttributes.updateOptionsBuilder(feedbackSessionName, courseId)
+                data.instructor.getEmail(), TimeHelper.getInstantDaysOffsetFromNow(-1));
+        logic.updateFeedbackSession(FeedbackSessionAttributes.updateOptionsBuilder(data.sessionName, data.courseId)
                 .withInstructorDeadlines(newInstructorDeadlines)
                 .build());
         verifyCannotAccess(submissionParams);
@@ -297,8 +228,8 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         ______TS("Before selective deadline; should pass.");
 
         newInstructorDeadlines = Map.of(
-                instructor1OfCourse1.getEmail(), TimeHelper.getInstantDaysOffsetFromNow(1));
-        logic.updateFeedbackSession(FeedbackSessionAttributes.updateOptionsBuilder(feedbackSessionName, courseId)
+                data.instructor.getEmail(), TimeHelper.getInstantDaysOffsetFromNow(1));
+        logic.updateFeedbackSession(FeedbackSessionAttributes.updateOptionsBuilder(data.sessionName, data.courseId)
                 .withInstructorDeadlines(newInstructorDeadlines)
                 .build());
         verifyCanAccess(submissionParams);
@@ -306,23 +237,14 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testAccessControl_studentSubmissionPastEndTime_shouldAllowIfBeforeDeadline() throws Exception {
-        int questionNumber = 1;
-        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
-        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
-        String courseId = session1InCourse1.getCourseId();
-        StudentAttributes student1InCourse1 = typicalBundle.students.get("student1InCourse1");
-        FeedbackQuestionAttributes qn1InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
-                courseId, questionNumber);
+        TestData data = dataWithStudent(1, "session1InCourse1", "student1InCourse1");
 
         Instant newEndTime = TimeHelper.getInstantDaysOffsetFromNow(-2);
-        logic.updateFeedbackSession(FeedbackSessionAttributes.updateOptionsBuilder(feedbackSessionName, courseId)
+        logic.updateFeedbackSession(FeedbackSessionAttributes.updateOptionsBuilder(data.sessionName, data.courseId)
                 .withEndTime(newEndTime)
                 .build());
-        loginAsStudent(student1InCourse1.getGoogleId());
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
-        };
+        loginAsStudent(data.student.getGoogleId());
+        String[] submissionParams = getParams(data.question, Intent.STUDENT_SUBMISSION);
 
         ______TS("No selective deadline; should fail.");
 
@@ -331,8 +253,8 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         ______TS("After selective deadline; should fail.");
 
         Map<String, Instant> newStudentDeadlines = Map.of(
-                student1InCourse1.getEmail(), TimeHelper.getInstantDaysOffsetFromNow(-1));
-        logic.updateFeedbackSession(FeedbackSessionAttributes.updateOptionsBuilder(feedbackSessionName, courseId)
+                data.student.getEmail(), TimeHelper.getInstantDaysOffsetFromNow(-1));
+        logic.updateFeedbackSession(FeedbackSessionAttributes.updateOptionsBuilder(data.sessionName, data.courseId)
                 .withStudentDeadlines(newStudentDeadlines)
                 .build());
         verifyCannotAccess(submissionParams);
@@ -340,8 +262,8 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         ______TS("Before selective deadline; should pass.");
 
         newStudentDeadlines = Map.of(
-                student1InCourse1.getEmail(), TimeHelper.getInstantDaysOffsetFromNow(1));
-        logic.updateFeedbackSession(FeedbackSessionAttributes.updateOptionsBuilder(feedbackSessionName, courseId)
+                data.student.getEmail(), TimeHelper.getInstantDaysOffsetFromNow(1));
+        logic.updateFeedbackSession(FeedbackSessionAttributes.updateOptionsBuilder(data.sessionName, data.courseId)
                 .withStudentDeadlines(newStudentDeadlines)
                 .build());
         verifyCanAccess(submissionParams);
@@ -362,18 +284,9 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testAccessControl_studentDoesNotExist_shouldThrowEntityNotFoundException() throws Exception {
-        int questionNumber = 1;
-        FeedbackSessionAttributes sessionInTestingWithoutStudent = typicalBundle.feedbackSessions
-                .get("sessionInTestingWithoutStudent");
-        String feedbackSessionName = sessionInTestingWithoutStudent.getFeedbackSessionName();
-        String courseId = sessionInTestingWithoutStudent.getCourseId();
-        FeedbackQuestionAttributes qn1InSessionInTestingWithoutStudent = logic.getFeedbackQuestion(feedbackSessionName,
-                courseId, questionNumber);
+        TestData data = new TestData(1, "sessionInTestingWithoutStudent");
 
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSessionInTestingWithoutStudent.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
-        };
+        String[] submissionParams = getParams(data.question, Intent.STUDENT_SUBMISSION);
 
         ______TS("Student does not exist; should throw exception.");
 
@@ -382,19 +295,8 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testAccessControl_instructorDoesNotExist_shouldThrowEntityNotFoundException() throws Exception {
-        int questionNumber = 1;
-        FeedbackSessionAttributes sessionInTestingWithoutInstructor = typicalBundle.feedbackSessions
-                .get("sessionInTestingWithoutInstructor");
-        String feedbackSessionName = sessionInTestingWithoutInstructor.getFeedbackSessionName();
-        String courseId = sessionInTestingWithoutInstructor.getCourseId();
-        FeedbackQuestionAttributes qn1InSessionInTestingWithoutInstructor = logic.getFeedbackQuestion(
-                feedbackSessionName,
-                courseId, questionNumber);
-
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSessionInTestingWithoutInstructor.getId(),
-                Const.ParamsNames.INTENT, Intent.INSTRUCTOR_SUBMISSION.toString(),
-        };
+        TestData data = new TestData(1, "sessionInTestingWithoutInstructor");
+        String[] submissionParams = getParams(data.question, Intent.INSTRUCTOR_SUBMISSION);
 
         ______TS("Instructor does not exist; should throw exception.");
 
@@ -403,17 +305,9 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testAccessControl_unknownIntent_shouldThrowInvalidHttpParameterException() throws Exception {
-        int questionNumber = 4;
-        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
-        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
-        String courseId = session1InCourse1.getCourseId();
-        FeedbackQuestionAttributes qn4InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
-                courseId, questionNumber);
+        TestData data = new TestData(4, "session1InCourse1");
 
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn4InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.FULL_DETAIL.toString(),
-        };
+        String[] submissionParams = getParams(data.question, Intent.FULL_DETAIL);
 
         ______TS("Incorrect intent parameter; should throw exception.");
 
@@ -422,17 +316,9 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testAccessControl_studentResultIntent_shouldThrowInvalidHttpParameterException() throws Exception {
-        int questionNumber = 4;
-        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
-        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
-        String courseId = session1InCourse1.getCourseId();
-        FeedbackQuestionAttributes qn4InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
-                courseId, questionNumber);
+        TestData data = new TestData(4, "session1InCourse1");
 
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn4InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_RESULT.toString(),
-        };
+        String[] submissionParams = getParams(data.question, Intent.STUDENT_RESULT);
 
         ______TS("Student Result Intent; should throw exception.");
 
@@ -441,17 +327,9 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testAccessControl_instructorResultIntent_shouldThrowInvalidHttpParameterException() throws Exception {
-        int questionNumber = 4;
-        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
-        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
-        String courseId = session1InCourse1.getCourseId();
-        FeedbackQuestionAttributes qn4InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
-                courseId, questionNumber);
+        TestData data = new TestData(4, "session1InCourse1");
 
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn4InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.INSTRUCTOR_RESULT.toString(),
-        };
+        String[] submissionParams = getParams(data.question, Intent.INSTRUCTOR_RESULT);
 
         ______TS("Incorrect intent parameter; should throw exception.");
 
@@ -460,31 +338,26 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testExecute_invalidResponse_shouldThrowInvalidHttpRequestBodyException() throws Exception {
-        int questionNumber = 1;
         var bundle = loadDataBundle("/FeedbackSessionQuestionTypeTest.json");
         logic.persistDataBundle(bundle);
-        var session = bundle.feedbackSessions.get("numscaleSession");
-        var student = bundle.students.get("student1InCourse1");
         // Responses to this question should be in the range 1 <= x <= 5 with a step size of 0.5
-        var question = logic.getFeedbackQuestion(session.getFeedbackSessionName(), session.getCourseId(), questionNumber);
-        loginAsStudent(student.getGoogleId());
+        TestData data = dataWithStudent(1, "numscaleSession", "student1InCourse1", bundle);
 
-        var existingResponses = logic.getFeedbackResponsesFromStudentOrTeamForQuestion(question, student);
+        loginAsStudent(data.student.getGoogleId());
+
+        var existingResponses = logic.getFeedbackResponsesFromStudentOrTeamForQuestion(data.question, data.student);
         var badDetails = new FeedbackNumericalScaleResponseDetails();
         badDetails.setAnswer(0.9);
         existingResponses.add(
-                FeedbackResponseAttributes.builder(question.getId(), student.getEmail(), student.getEmail())
-                        .withCourseId(session.getCourseId())
-                        .withFeedbackSessionName(session.getFeedbackSessionName())
+                FeedbackResponseAttributes.builder(data.question.getId(), data.student.getEmail(), data.student.getEmail())
+                        .withCourseId(data.session.getCourseId())
+                        .withFeedbackSessionName(data.session.getFeedbackSessionName())
                         .withResponseDetails(badDetails)
                         .build()
         );
         var request = feedbackAttributesToRequest(existingResponses);
 
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, question.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
-        };
+        String[] submissionParams = getParams(data.question, Intent.STUDENT_SUBMISSION);
 
         SubmitFeedbackResponsesAction a = getAction(request, submissionParams);
 
@@ -513,5 +386,90 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
                         r.getResponseDetails()
         )).collect(Collectors.toList()));
         return responsesRequest;
+    }
+
+    /**
+     * Get the submission parameters for a given question and intent.
+     */
+    private String[] getParams(FeedbackQuestionAttributes question, Intent intent) {
+        return new String[] {
+                Const.ParamsNames.FEEDBACK_QUESTION_ID, question.getId(),
+                Const.ParamsNames.INTENT, intent.toString(),
+        };
+    }
+
+    /**
+     * Create a {@code FeedbackResponsesRequest} with a single response defined by {@code details}.
+     */
+    private FeedbackResponsesRequest createSingletonResponsesRequest(String recipient, FeedbackResponseDetails details) {
+        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
+        var responseRequest = new FeedbackResponsesRequest.FeedbackResponseRequest(
+                recipient, details);
+        responsesRequest.setResponses(Collections.singletonList(responseRequest));
+        return responsesRequest;
+    }
+
+    /**
+     * Create a {@code TestData} instance for a given student.
+     */
+    private TestData dataWithStudent(int questionNumber, String session, String student) {
+        TestData data = new TestData(questionNumber, session);
+        data.student = typicalBundle.students.get(student);
+        return data;
+    }
+
+    /**
+     * Create a {@code TestData} instance for a given student with a specified bundle.
+     */
+    @SuppressWarnings("PMD.UnusedPrivateMethod") // This method will be needed when accessing other bundles.
+    private TestData dataWithStudent(int questionNumber, String session, String student, DataBundle bundle) {
+        TestData data = new TestData(questionNumber, session, bundle);
+        data.student = bundle.students.get(student);
+        return data;
+    }
+
+    /**
+     * Create a {@code TestData} instance for a given instructor.
+     */
+    private TestData dataWithInstructor(int questionNumber, String session, String instructor) {
+        TestData data = new TestData(questionNumber, session);
+        data.instructor = typicalBundle.instructors.get(instructor);
+        return data;
+    }
+
+    /**
+     * Create a {@code TestData} instance for a given instructor with a specified bundle.
+     */
+    @SuppressWarnings("PMD.UnusedPrivateMethod") // This method will be needed when accessing other bundles.
+    private TestData dataWithInstructor(int questionNumber, String session, String instructor, DataBundle bundle) {
+        TestData data = new TestData(questionNumber, session, bundle);
+        data.instructor = bundle.instructors.get(instructor);
+        return data;
+    }
+
+    /**
+     * Helper class to more easily handle neccessary test data.
+     */
+    private class TestData {
+        FeedbackSessionAttributes session;
+        String sessionName;
+        String courseId;
+        FeedbackQuestionAttributes question;
+        StudentAttributes student;
+        InstructorAttributes instructor;
+
+        TestData(int questionNumber, String session) {
+            this.session = typicalBundle.feedbackSessions.get(session);
+            sessionName = this.session.getFeedbackSessionName();
+            courseId = this.session.getCourseId();
+            question = logic.getFeedbackQuestion(sessionName, courseId, questionNumber);
+        }
+
+        TestData(int questionNumber, String session, DataBundle bundle) {
+            this.session = bundle.feedbackSessions.get(session);
+            sessionName = this.session.getFeedbackSessionName();
+            courseId = this.session.getCourseId();
+            question = logic.getFeedbackQuestion(sessionName, courseId, questionNumber);
+        }
     }
 }
