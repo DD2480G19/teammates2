@@ -1285,6 +1285,27 @@
         "INSTRUCTORS"
       ]
     },
+    "qn1InSessionInTestingGiverType": {
+      "feedbackSessionName": "Testing giver type session",
+      "courseId": "idOfSessionInTestingGiverType",
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Are you guys enjoying teammates so far ?"
+      },
+      "questionNumber": 1,
+      "giverType": "TEAMS",
+      "recipientType": "STUDENTS",
+      "numberOfEntitiesToGiveFeedbackTo": 1,
+      "showResponsesTo": [
+        "INSTRUCTORS"
+      ],
+      "showGiverNameTo": [
+        "INSTRUCTORS"
+      ],
+      "showRecipientNameTo": [
+        "INSTRUCTORS"
+      ]
+    },
     "team.feedback": {
       "feedbackSessionName": "Second feedback session",
       "courseId": "idOfTypicalCourse1",
