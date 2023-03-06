@@ -2,6 +2,7 @@ package teammates.ui.webapi;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,7 @@ import teammates.common.datatransfer.attributes.FeedbackResponseAttributes;
 import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
 import teammates.common.datatransfer.attributes.InstructorAttributes;
 import teammates.common.datatransfer.attributes.StudentAttributes;
+import teammates.common.datatransfer.questions.FeedbackNumericalScaleResponseDetails;
 import teammates.common.datatransfer.questions.FeedbackTextResponseDetails;
 import teammates.common.util.Const;
 import teammates.common.util.JsonUtils;
@@ -21,6 +23,7 @@ import teammates.ui.output.FeedbackResponseData;
 import teammates.ui.output.FeedbackResponsesData;
 import teammates.ui.request.FeedbackResponsesRequest;
 import teammates.ui.request.Intent;
+import teammates.ui.request.InvalidHttpRequestBodyException;
 
 /**
  * SUT: {@link SubmitFeedbackResponsesAction}.
@@ -455,6 +458,41 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         verifyHttpParameterFailureAcl(submissionParams);
     }
 
+    @Test
+    public void testExecute_invalidResponse_shouldThrowInvalidHttpRequestBodyException() throws Exception {
+        int questionNumber = 1;
+        var bundle = loadDataBundle("/FeedbackSessionQuestionTypeTest.json");
+        logic.persistDataBundle(bundle);
+        var session = bundle.feedbackSessions.get("numscaleSession");
+        var student = bundle.students.get("student1InCourse1");
+        // Responses to this question should be in the range 1 <= x <= 5 with a step size of 0.5
+        var question = logic.getFeedbackQuestion(session.getFeedbackSessionName(), session.getCourseId(), questionNumber);
+        loginAsStudent(student.getGoogleId());
+
+        var existingResponses = logic.getFeedbackResponsesFromStudentOrTeamForQuestion(question, student);
+        var badDetails = new FeedbackNumericalScaleResponseDetails();
+        badDetails.setAnswer(0.9);
+        existingResponses.add(
+                FeedbackResponseAttributes.builder(question.getId(), student.getEmail(), student.getEmail())
+                        .withCourseId(session.getCourseId())
+                        .withFeedbackSessionName(session.getFeedbackSessionName())
+                        .withResponseDetails(badDetails)
+                        .build()
+        );
+        var request = feedbackAttributesToRequest(existingResponses);
+
+        String[] submissionParams = new String[] {
+                Const.ParamsNames.FEEDBACK_QUESTION_ID, question.getId(),
+                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
+        };
+
+        SubmitFeedbackResponsesAction a = getAction(request, submissionParams);
+
+        ______TS("Valid responses should be in range [1, 5] with step size .5; new response is 0.9");
+        assertThrows(InvalidHttpRequestBodyException.class, () -> a.execute());
+        logoutUser();
+    }
+
     private void verifyFeedbackResponseEquals(FeedbackResponseAttributes expected, FeedbackResponseData actual)
             throws Exception {
         assertEquals(expected.getId(), StringHelper.decrypt(actual.getFeedbackResponseId()));
@@ -464,5 +502,16 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         assertEquals(expected.getResponseDetailsCopy().getQuestionType(), actual.getResponseDetails().getQuestionType());
         assertEquals(JsonUtils.toJson(expected.getResponseDetailsCopy()),
                 JsonUtils.toJson(actual.getResponseDetails()));
+    }
+
+    private FeedbackResponsesRequest feedbackAttributesToRequest(List<FeedbackResponseAttributes> responses) {
+        // Create a responses requestion with all existing responses
+        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
+        responsesRequest.setResponses(responses.stream().map(r ->
+                new FeedbackResponsesRequest.FeedbackResponseRequest(
+                        r.getRecipient(),
+                        r.getResponseDetails()
+        )).collect(Collectors.toList()));
+        return responsesRequest;
     }
 }
