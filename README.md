@@ -156,6 +156,7 @@ it, or change your task to a different issue, perhaps in a different project.
 > If you were not able to finish all tasks, how much progress have you made? How much time do you think you would need to complete the task? 
 
 ### Main take-aways
+From this projects, there are many take-aways. One is that as projects increase in size, well-structured development becomes increasingly important. Strict guidelines for the format of contributions are essential to keep code uniform and readable. TEAMMATES has a good and clear structure for this, for example seen in some parts in their documentation of the project, in the pull request workflow, etc. Although, in other ways, their documentation is insufficient. Due to this, it has sometimes been unnecessarily time-consuming getting to know the program. So, this is another take-away – that documentation is extra important for large projects with complex systems. 
 
 ### Essence evaluation
 > ***P+ criterion 6: You can argue critically about the benefits, drawbacks, and limitations of your work carried out, in the context of current software engineering practice, such as the SEMAT kernel (covering alphas other than Team/Way of Working).***
@@ -163,6 +164,10 @@ it, or change your task to a different issue, perhaps in a different project.
 > **From assignment description:**
 > Assess your team (p. 51 in the [Essence standard](https://www.omg.org/spec/Essence/1.2/PDF) v1.2) by evaluating the checklist on p. 52:
 > In what state are you in? Why? What are obstacles to reach the next state? How have you improved during the course, and where is more improvement possible?
+
+The team is in the *Adjourned* state. Through the work on this assignment, we have had a clear mission: To improve the branch coverage relating to the chosen issue, and fulfill all requirements for both P and P+. We already had knowledge of the project from the previous assignment. We have had a very well-working team where everyone has contributed and communicated about progress and obstacles. The members' strengths have been of great benefit for the rest of the team. All work was kept track of with GitHub issues and a project board. We are now done with the final assignment, and no more tasks are to be done. There is no next state. 
+
+During the course, we have improved our knowledge of larger software projects, and software engineering in general – not only relating directly to coding, but also planning, task-management, dividing responsibility, testing, documentation, and more. Although, there is obviously room for improvement. For example, we would have liked to work even more systematically to be able to avoid code duplication, inefficiency, etc. E.g., we could have given the team members different roles, had regular smaller meetings for those with similar tasks, and more.
 
 ## P+ points aimed for
 - *1. The architecture and purpose of the system are presented in an overview of about 1–1.5 pages; consider
