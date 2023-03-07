@@ -158,8 +158,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         assertEquals(0, existingResponsesLength);
 
         // Create a responses requestion with a new response
-        List<FeedbackResponsesRequest.FeedbackResponseRequest> newResponses =
-                new ArrayList<FeedbackResponsesRequest.FeedbackResponseRequest>();
+        List<FeedbackResponsesRequest.FeedbackResponseRequest> newResponses = new ArrayList<>();
         newResponses.add(new FeedbackResponsesRequest.FeedbackResponseRequest(
                 data.student.getEmail(),
                 new FeedbackTextResponseDetails("New response")
