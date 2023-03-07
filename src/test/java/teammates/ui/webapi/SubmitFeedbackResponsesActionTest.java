@@ -371,7 +371,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
         // Delete the only instructor for a typical course:
         logic.deleteInstructorCascade(data.courseId, "instructorOfArchiveCourse@archiveCourse.tmt");
-        
+
         String[] submissionParams = getParams(data.question, Intent.INSTRUCTOR_SUBMISSION);
 
         ______TS("Instructor does not exist; should throw exception.");
