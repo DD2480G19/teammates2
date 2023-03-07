@@ -124,13 +124,8 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         // Modify the existing response
         existingResponse.setResponseDetails(new FeedbackTextResponseDetails("I'm not cool"));
 
-        // Create a responses requestion with all existing responses
-        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
-        responsesRequest.setResponses(existingResponses.stream().map(r ->
-                new FeedbackResponsesRequest.FeedbackResponseRequest(
-                        existingResponse.getRecipient(),
-                        existingResponse.getResponseDetails()
-        )).collect(Collectors.toList()));
+        // Create a responses request with all existing responses
+        var responsesRequest = feedbackAttributesToRequest(existingResponses);
 
         SubmitFeedbackResponsesAction a = getAction(responsesRequest, submissionParams);
         JsonResult result = getJsonResult(a);
