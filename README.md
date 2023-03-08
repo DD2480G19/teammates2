@@ -111,14 +111,11 @@ In this section, we've tried to identify all untested requirements for the two m
 > ***P criterion 5: Changes to the code and test suite are shown and documented, e.g., as a patch.***
 
 ### Patch
-> ***P+ criterion 4: Your patch is clean in that it (a) removes but does not comment out obsolete code and (b) does not produce extraneous output that is not required for your task (such as debug output) and (c) does not add unnecessary whitespace changes (such as adding or removing empty lines).***
 
-> ***P+ criterion 5: Patches are accepted by the project, or considered for acceptance. (This requires a link to an accepted commit, or a discussion item.) Note: the patch must be submitted by the assignment deadline, but it may be accepted later. (Please notify us if this extra point is necessary for a P+.)***
+The patch is this forked repository, more specifically, the changes made to `SubmitFeedbackResponsesActionTest.java`. To view the difference between the original repository and the patch, run:
 
-> (copy your changes or the add git command to show them)
-> `git diff ...`
-> Optional (point 4): the patch is clean.
-> Optional (point 5): considered for acceptance (passes all automated checks).
+`git diff b294a5b src/test/java/teammates/ui/webapi/SubmitFeedbackResponsesActionTest.java`
+
 
 ## Test results
 > ***P criterion 6: Tests are automated, their outcome is documented, e.g., as a test log.***
