@@ -1,6 +1,7 @@
 package teammates.ui.webapi;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -54,25 +55,15 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testExecute_studentSubmission_giverIdentifierShouldBeEmail() throws Exception {
-        int questionNumber = 1;
-        FeedbackSessionAttributes session1InCourse1 = typicalBundle.feedbackSessions.get("session1InCourse1");
-        String feedbackSessionName = session1InCourse1.getFeedbackSessionName();
-        String courseId = session1InCourse1.getCourseId();
-        StudentAttributes student1InCourse1 = typicalBundle.students.get("student1InCourse1");
-        FeedbackQuestionAttributes qn1InSession1InCourse1 = logic.getFeedbackQuestion(feedbackSessionName,
-                courseId, questionNumber);
+        TestData data = dataWithStudent(1, "session1InCourse1", "student1InCourse1");
 
-        loginAsStudent(student1InCourse1.getGoogleId());
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, qn1InSession1InCourse1.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
-        };
-
+        loginAsStudent(data.student.getGoogleId());
+        String[] submissionParams = getParams(data.question, Intent.STUDENT_SUBMISSION);
         FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
         FeedbackTextResponseDetails responseDetails = new FeedbackTextResponseDetails("Updated response details");
         FeedbackResponsesRequest.FeedbackResponseRequest responseRequest =
                 new FeedbackResponsesRequest.FeedbackResponseRequest(
-                        student1InCourse1.getEmail(), responseDetails);
+                        data.student.getEmail(), responseDetails);
 
         responsesRequest.setResponses(Collections.singletonList(responseRequest));
 
@@ -81,7 +72,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         FeedbackResponsesData responses = (FeedbackResponsesData) result.getOutput();
         FeedbackResponseData actualResponse = responses.getResponses().get(0);
         ______TS("Student submission; giverType should be email");
-        verifyGiverTypeIsStudentEmail(student1InCourse1, actualResponse);
+        verifyGiverTypeIsStudentEmail(data.student, actualResponse);
     }
 
     @Test
@@ -124,13 +115,8 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         // Modify the existing response
         existingResponse.setResponseDetails(new FeedbackTextResponseDetails("I'm not cool"));
 
-        // Create a responses requestion with all existing responses
-        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
-        responsesRequest.setResponses(existingResponses.stream().map(r ->
-                new FeedbackResponsesRequest.FeedbackResponseRequest(
-                        existingResponse.getRecipient(),
-                        existingResponse.getResponseDetails()
-        )).collect(Collectors.toList()));
+        // Create a responses request with all existing responses
+        var responsesRequest = feedbackAttributesToRequest(existingResponses);
 
         SubmitFeedbackResponsesAction a = getAction(responsesRequest, submissionParams);
         JsonResult result = getJsonResult(a);
@@ -140,6 +126,41 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         ______TS("Existing response has been modified; should be reflected in the result.");
         assertEquals(existingResponses.size(), responses.getResponses().size());
         verifyFeedbackResponseEquals(existingResponse, actualResponse);
+    }
+
+    @Test
+    public void testExecute_noExistingResponse_newResponseAdded() throws Exception {
+        TestData data = dataWithStudent(1, "session1InCourse1", "student3InCourse1");
+
+        loginAsStudent(data.student.getGoogleId());
+
+        String[] submissionParams = getParams(data.question, Intent.STUDENT_SUBMISSION);
+
+        var existingResponses = logic.getFeedbackResponsesFromStudentOrTeamForQuestion(data.question, data.student);
+        int existingResponsesLength = existingResponses.size();
+
+        ______TS("There should be 0 existing responses for this student");
+        assertEquals(0, existingResponsesLength);
+
+        // Create a responses requestion with a new response
+        List<FeedbackResponsesRequest.FeedbackResponseRequest> newResponses = new ArrayList<>();
+        newResponses.add(new FeedbackResponsesRequest.FeedbackResponseRequest(
+                data.student.getEmail(),
+                new FeedbackTextResponseDetails("New response")
+        ));
+        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
+        responsesRequest.setResponses(newResponses);
+
+        SubmitFeedbackResponsesAction a = getAction(responsesRequest, submissionParams);
+        JsonResult result = getJsonResult(a);
+        FeedbackResponsesData responses = (FeedbackResponsesData) result.getOutput();
+        FeedbackResponseData actualResponse = responses.getResponses().get(0);
+
+        ______TS("New response added; should be reflected in the result.");
+        assertEquals(
+                newResponses.get(0).getResponseDetails().getAnswerString(),
+                actualResponse.getResponseDetails().getAnswerString()
+        );
     }
 
     @Test
@@ -169,26 +190,18 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testExecute_studentSubmission_giverIdentifierShouldBeTeamName() throws Exception {
-        int questionNumber = 3;
         var bundle = loadDataBundle("/FeedbackSessionsLogicTest.json");
         logic.persistDataBundle(bundle);
-        var session = bundle.feedbackSessions.get("gracePeriodSession");
-        var student = bundle.students.get("student1InCourse1");
-        String feedbackSessionName = session.getFeedbackSessionName();
-        String courseId = session.getCourseId();
-        FeedbackQuestionAttributes teamFeedback = logic.getFeedbackQuestion(feedbackSessionName,
-                courseId, questionNumber);
+        TestData data = dataWithStudent(3, "gracePeriodSession", "student1InCourse1", bundle);
 
-        loginAsStudent(student.getGoogleId());
-        String[] submissionParams = new String[] {
-                Const.ParamsNames.FEEDBACK_QUESTION_ID, teamFeedback.getId(),
-                Const.ParamsNames.INTENT, Intent.STUDENT_SUBMISSION.toString(),
-        };
+        loginAsStudent(data.student.getGoogleId());
+
+        String[] submissionParams = getParams(data.question, Intent.STUDENT_SUBMISSION);
 
         FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
         FeedbackTextResponseDetails resDet = new FeedbackTextResponseDetails("Updated response details");
         FeedbackResponsesRequest.FeedbackResponseRequest resReq = new
-                FeedbackResponsesRequest.FeedbackResponseRequest(student.getTeam(), resDet);
+                FeedbackResponsesRequest.FeedbackResponseRequest(data.student.getTeam(), resDet);
 
         responsesRequest.setResponses(Collections.singletonList(resReq));
 
@@ -199,7 +212,7 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
         ______TS("Student submission; giverType should be team name");
 
-        verifyGiverTypeIsTeamName(student, actualResponse);
+        verifyGiverTypeIsTeamName(data.student, actualResponse);
     }
 
     @Test
@@ -351,7 +364,12 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testAccessControl_studentDoesNotExist_shouldThrowEntityNotFoundException() throws Exception {
-        TestData data = new TestData(1, "sessionInTestingWithoutStudent");
+        TestData data = new TestData(1, "session1InCourse1");
+
+        // Delete the students for a typical course:
+        for (var student : logic.getStudentsForCourse(data.courseId)) {
+            logic.deleteStudentCascade(data.courseId, student.getEmail());
+        }
 
         String[] submissionParams = getParams(data.question, Intent.STUDENT_SUBMISSION);
 
@@ -362,7 +380,11 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testAccessControl_instructorDoesNotExist_shouldThrowEntityNotFoundException() throws Exception {
-        TestData data = new TestData(1, "sessionInTestingWithoutInstructor");
+        TestData data = new TestData(1, "archiveCourse.session1");
+
+        // Delete the only instructor for a typical course:
+        logic.deleteInstructorCascade(data.courseId, "instructorOfArchiveCourse@archiveCourse.tmt");
+
         String[] submissionParams = getParams(data.question, Intent.INSTRUCTOR_SUBMISSION);
 
         ______TS("Instructor does not exist; should throw exception.");
