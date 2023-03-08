@@ -121,15 +121,21 @@ In this section, we've tried to identify all untested requirements for the two m
 > Optional (point 5): considered for acceptance (passes all automated checks).
 
 ## Test results
-> ***P criterion 6: Tests are automated, their outcome is documented, e.g., as a test log.***
+### Code Coverage Tests
+We will use code coverage as a measurement to evaulate our new tests. The coverage before our patch can be seen in the image bellow: 
 
-> Overall results with link to a copy or excerpt of the logs (before/after refactoring).
+![image](https://user-images.githubusercontent.com/71826609/223674992-cdda5e44-3878-4b97-8048-ff6929b69be2.png)
 
-> **From assignment description:**
-> Run the existing regression tests; make sure they succeed. If any tests fail, check if they may interfere
-with your task. ***Keep copies of the test logs.*** If you there is a problem with the existing tests that
-interferes with your task, document that as a new issue (in the issue tracker), and either try to resolve
-it, or change your task to a different issue, perhaps in a different project.
+After writing our tests, this is the new code coverage:
+
+![image](https://user-images.githubusercontent.com/71826609/223677945-5d3417b5-a514-4ceb-afe9-b352310e79e1.png)
+
+In other words, we increased the total coverage from 13% to 94% which corresponds to all branches except two. The two missed branches corresponds to the two requirements, `ex12` and `ex13`, that were deemed outside the scope of our project due to us not having a good enough understanding of them to write 
+meaningful tests.
+
+### Actual Test Results
+We checked that all component tests passed before working on our patch. Afterwards, all component tests, including our newly written ones, passed on both Windows and Ubuntu.  
+
 
 ## UML class diagram and its description
 > ***P criterion 7: Key features affected by the issue are shown in UML class diagrams (for refactorings: include before/after). Note: you do not have to show classes, fields, or methods that are not relevant, unless they help with the overall understanding. Typically, the diagram would contain 5–10 classes.*** 
