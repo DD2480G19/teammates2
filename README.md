@@ -61,7 +61,7 @@ Time spent for each team member and category [hours]:
 | <a href="https://github.com/edbag22"><img src="https://avatars.githubusercontent.com/u/78201117?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a> Edvin |4.5|1|1|3|1|10|1|21.5|
 | <a href="https://github.com/gustafssonlinnea"><img src="https://avatars.githubusercontent.com/u/70338667?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a> Linnéa |4.5|2|1|6|9.25| | |22.75|
 | <a href="https://github.com/markusnewtonh"><img src="https://avatars.githubusercontent.com/u/61276335?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Markus |4.5|1.6|1.5|6.0|1.5|7.7|1|22.3|
-| <a href="https://github.com/ElHachem02"><img src="https://avatars.githubusercontent.com/u/100425207?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Peter  | | | | | | | | |
+| <a href="https://github.com/ElHachem02"><img src="https://avatars.githubusercontent.com/u/100425207?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Peter  |4.5|1.8|0.6|5|0.8|8.2|1|21.9|
 | <a href="https://github.com/FalkWasTakena"><img src="https://avatars.githubusercontent.com/u/71826609?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Samuel |4.5|2|0.5|4.75|2.5|8.5|0.5|23.25|
 
 ## Overview of issue(s) and work done
