@@ -142,6 +142,9 @@ it, or change your task to a different issue, perhaps in a different project.
 > Optional (point 1): Architectural overview.
 > Optional (point 2): relation to design pattern(s).
 
+### Architecture and purpose of the system
+An overview of the architecture and purpose of the system can be find [here](https://drive.google.com/file/d/1PSz7TaH7jJx8tZEWGXm874XaHgWZf7ed/view?usp=sharing)
+
 ## Overall experience
 > ***P criterion 8: The overall work carried out, and experience gained, are documented. In particular, mention your experience about the given documentation/examples of the project, its tool framework, and the interaction within your team (using the Essence framework) and with the community of the project.***
 
