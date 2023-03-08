@@ -1,6 +1,7 @@
 package teammates.ui.webapi;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -125,6 +126,41 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
         ______TS("Existing response has been modified; should be reflected in the result.");
         assertEquals(existingResponses.size(), responses.getResponses().size());
         verifyFeedbackResponseEquals(existingResponse, actualResponse);
+    }
+
+    @Test
+    public void testExecute_noExistingResponse_newResponseAdded() throws Exception {
+        TestData data = dataWithStudent(1, "session1InCourse1", "student3InCourse1");
+
+        loginAsStudent(data.student.getGoogleId());
+
+        String[] submissionParams = getParams(data.question, Intent.STUDENT_SUBMISSION);
+
+        var existingResponses = logic.getFeedbackResponsesFromStudentOrTeamForQuestion(data.question, data.student);
+        int existingResponsesLength = existingResponses.size();
+
+        ______TS("There should be 0 existing responses for this student");
+        assertEquals(0, existingResponsesLength);
+
+        // Create a responses requestion with a new response
+        List<FeedbackResponsesRequest.FeedbackResponseRequest> newResponses = new ArrayList<>();
+        newResponses.add(new FeedbackResponsesRequest.FeedbackResponseRequest(
+                data.student.getEmail(),
+                new FeedbackTextResponseDetails("New response")
+        ));
+        FeedbackResponsesRequest responsesRequest = new FeedbackResponsesRequest();
+        responsesRequest.setResponses(newResponses);
+
+        SubmitFeedbackResponsesAction a = getAction(responsesRequest, submissionParams);
+        JsonResult result = getJsonResult(a);
+        FeedbackResponsesData responses = (FeedbackResponsesData) result.getOutput();
+        FeedbackResponseData actualResponse = responses.getResponses().get(0);
+
+        ______TS("New response added; should be reflected in the result.");
+        assertEquals(
+                newResponses.get(0).getResponseDetails().getAnswerString(),
+                actualResponse.getResponseDetails().getAnswerString()
+        );
     }
 
     @Test
