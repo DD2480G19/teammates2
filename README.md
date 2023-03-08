@@ -138,18 +138,15 @@ We checked that all component tests passed before working on our patch. Afterwar
 
 
 ## UML class diagram and its description
-> ***P criterion 7: Key features affected by the issue are shown in UML class diagrams (for refactorings: include before/after). Note: you do not have to show classes, fields, or methods that are not relevant, unless they help with the overall understanding. Typically, the diagram would contain 5–10 classes.*** 
 
 ### Key changes/classes affected
-> ***P+ criterion 1: The architecture and purpose of the system are presented in an overview of about 1–1.5 pages; consider using a diagram. Note: If you manage to improve on existing documentation or fill a gap in the project here, please consider making your documentation available to the project; they may be grateful for it!***
 
-> ***P+ criterion 2: Updates in the source are put into context with the overall software architecture and discussed, relating them to design patterns and/or refactoring patterns.***
+<img src="docs/images/UMLdiagramIssue11826.png" alt="UMLdiagram" border="0">
 
-> Optional (point 1): Architectural overview.
-> Optional (point 2): relation to design pattern(s).
+In the diagram, we can see the main classes affected by our work. The tests are added to `SubmitFeedbackResponsesActionTest` (the shown methods in the corresponding class), the test class of `SubmitFeedbackResponsesAction`. `SubmitFeedbackResponsesActionTest` inherits its structure from many levels of test classes, from `BaseActionTest` to `BaseTestCase`. `SubmitFeedbackResponsesAction` inherits from `BasicFeedbackSubmissionAction`, which in turn inherits from `Action`. The interface of the testing is `Test`. `LogicExtension` and `Logic` were used to interface with the database.
 
 ### Architecture and purpose of the system
-An overview of the architecture and purpose of the system can be find [here](https://drive.google.com/file/d/1PSz7TaH7jJx8tZEWGXm874XaHgWZf7ed/view?usp=sharing)
+An overview of the architecture and purpose of the system can be found [here](https://drive.google.com/file/d/1PSz7TaH7jJx8tZEWGXm874XaHgWZf7ed/view?usp=sharing).
 
 ## Overall experience
 > ***P criterion 8: The overall work carried out, and experience gained, are documented. In particular, mention your experience about the given documentation/examples of the project, its tool framework, and the interaction within your team (using the Essence framework) and with the community of the project.***
