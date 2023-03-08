@@ -35,8 +35,6 @@ We chose to continue with the project from the previous assignment. This is the 
 *In conclusion, the onboarding experience was smooth and we plan to continue with the project."*
 
 ## Effort spent
-> ***P criterion 2: The contribution of each group member is documented. The work carried out is commensurate with the expected time spent (20–25 hours per person).***
-
 > For each team member, how much time was spent in
 > 1. plenary discussions/meetings;
 > 2. discussions within parts of the group;
@@ -45,15 +43,6 @@ We chose to continue with the project from the previous assignment. This is the 
 > 5. writing documentation;
 > 6. writing code;
 > 7. running code?
-> 
-> For setting up tools and libraries (step 4), enumerate all dependencies
-you took care of and where you spent your time, if that time exceeds
-30 minutes.
-
-> **From assignment description:**
-> Document your experience. Keep track of how your team spends its time.
-> 
-> Note: We might have to change format from a table if it doesn't look good when filling it in.
 
 Time spent for each team member and category [hours]:
 | Team member | 1 | 2 | 3 | 4 | 5 | 6 | 7 | In total |
@@ -69,16 +58,8 @@ The issue we worked with is [***Add unit tests for `SubmitFeedbackResponsesActio
 
 
 ## Requirements for the new feature or requirements affected by functionality being refactored
-> ***P criterion 4: Requirements related to the functionality are identified and described in a systematic way. Each requirement has a name (ID), title, and description. The description can be one paragraph per requirement.***
 
-> ***P+ criterion 3: Relevant test cases (existing tests and updated/new tests related to the refactored code) are traced to requirements.***
-
-> Optional (point 3): trace tests to requirements.
-
-> **From assignment description:**
-> Identify requirements related to the issue. If the requirements are not documented yet, try to describe them based on code reviews and existing test cases. Create a project plan for testing these requirements, and working on the issue.
-
-In this section, we've tried to identify all untested requirements for the two methods related to the issue. The tables can be seen in the two  subsections below: 
+In this section, we've tried to identify all untested requirements for the two methods related to the issue. The tables can be seen in the two subsections below: 
 
 ### Identified requirements for `checkSpecificAccessControl`
 | ID    | Title | Description | Issue |
@@ -107,9 +88,9 @@ In this section, we've tried to identify all untested requirements for the two m
 | ex12 | `execute`: Number of recipients are the max possible | If the number of recipients specified by the question is equal to the max number of recipients (`numRecipients == Const.MAX_POSSIBLE_RECIPIENTS`), the number of recipients is set to the value specified by the submission (`recipientsOfTheQuestion.size()`). <span style="color:red">*(Note: This seems contrived and the purpose of the code is not clear. With this in mind, we skip this for now.)*</span> |  |
 | ex13 | `execute`: Number of recipients are greater than number of recipients for the submission | If the number of recipients specified by the question is larger the the number of recipients specified by the submission (`numRecipients > recipientsOfTheQuestion.size()`), the number of recipients is set to the value specified by the submission (`recipientsOfTheQuestion.size()`). <span style="color:red">*(Note: This seems contrived and the purpose of the code is not clear. With this in mind, we skip this for now.)*</span> |  |
 
-## Code changes
-> ***P criterion 5: Changes to the code and test suite are shown and documented, e.g., as a patch.***
+These requirements were then used as a basis for all new tests.
 
+## Code changes
 ### Patch
 
 The patch is this forked repository, more specifically, the changes made to `SubmitFeedbackResponsesActionTest.java`. To view the difference between the original repository and the patch, run:
@@ -146,28 +127,10 @@ In the diagram, we can see the main classes affected by our work. The tests are 
 An overview of the architecture and purpose of the system can be found [here](https://drive.google.com/file/d/1PSz7TaH7jJx8tZEWGXm874XaHgWZf7ed/view?usp=sharing).
 
 ## Overall experience
-> ***P criterion 8: The overall work carried out, and experience gained, are documented. In particular, mention your experience about the given documentation/examples of the project, its tool framework, and the interaction within your team (using the Essence framework) and with the community of the project.***
-
-> ***P+ criterion 7: You have done something extraordinary that exceeds the scope of the assignment, and which you can be proud of.***
-
-> What are your main take-aways from this project? What did you learn?
-> How did you grow as a team, using the Essence standard to evaluate yourself?
-> Optional (point 6): How would you put your work in context with best software engineering practice?
-> Optional (point 7): Is there something special you want to mention here?
-
-> **From assignment description:**
-> If you were not able to finish all tasks, how much progress have you made? How much time do you think you would need to complete the task? 
-
 ### Main take-aways
 From this projects, there are many take-aways. One is that as projects increase in size, well-structured development becomes increasingly important. Strict guidelines for the format of contributions are essential to keep code uniform and readable. TEAMMATES has a good and clear structure for this, for example seen in some parts in their documentation of the project, in the pull request workflow, etc. Although, in other ways, their documentation is insufficient. Due to this, it has sometimes been unnecessarily time-consuming getting to know the program. So, this is another take-away – that documentation is extra important for large projects with complex systems. 
 
 ### Essence evaluation
-> ***P+ criterion 6: You can argue critically about the benefits, drawbacks, and limitations of your work carried out, in the context of current software engineering practice, such as the SEMAT kernel (covering alphas other than Team/Way of Working).***
-
-> **From assignment description:**
-> Assess your team (p. 51 in the [Essence standard](https://www.omg.org/spec/Essence/1.2/PDF) v1.2) by evaluating the checklist on p. 52:
-> In what state are you in? Why? What are obstacles to reach the next state? How have you improved during the course, and where is more improvement possible?
-
 The team is in the *Adjourned* state. Through the work on this assignment, we have had a clear mission: To improve the branch coverage relating to the chosen issue, and fulfill all requirements for both P and P+. We already had knowledge of the project from the previous assignment. We have had a very well-working team where everyone has contributed and communicated about progress and obstacles. The members' strengths have been of great benefit for the rest of the team. All work was kept track of with GitHub issues and a project board. We are now done with the final assignment, and no more tasks are to be done. There is no next state. 
 
 During the course, we have improved our knowledge of larger software projects, and software engineering in general – not only relating directly to coding, but also planning, task-management, dividing responsibility, testing, documentation, and more. Although, there is obviously room for improvement. For example, we would have liked to work even more systematically to be able to avoid code duplication, inefficiency, etc. E.g., we could have given the team members different roles, had regular smaller meetings for those with similar tasks, and more.
