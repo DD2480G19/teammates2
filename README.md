@@ -60,20 +60,13 @@ Time spent for each team member and category [hours]:
 |-------------|---|---|---|---|---|---|---|----------|
 | <a href="https://github.com/edbag22"><img src="https://avatars.githubusercontent.com/u/78201117?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a> Edvin  | | | | | | | | |
 | <a href="https://github.com/gustafssonlinnea"><img src="https://avatars.githubusercontent.com/u/70338667?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a> Linnéa | | | | | | | | |
-| <a href="https://github.com/markusnewtonh"><img src="https://avatars.githubusercontent.com/u/61276335?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Markus | | | | | | | | |
+| <a href="https://github.com/markusnewtonh"><img src="https://avatars.githubusercontent.com/u/61276335?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Markus |3.9|1.6|1.5|6.0|1.5|7.7|1|21.7|
 | <a href="https://github.com/ElHachem02"><img src="https://avatars.githubusercontent.com/u/100425207?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Peter  | | | | | | | | |
 | <a href="https://github.com/FalkWasTakena"><img src="https://avatars.githubusercontent.com/u/71826609?v=4" width="25" height="25" style="vertical-align:middle;margin:0px 5px" alt="Edvin" align="left"/></a>  Samuel | | | | | | | | |
 
-## Overview of issue(s) and work done.
-> Title:
-> URL:
-> Summary in one or two sentences
-> Scope (functionality and code affected).
+## Overview of issue(s) and work done
+The issue we worked with is [***Add unit tests for `SubmitFeedbackResponsesAction` (#11826)***](https://github.com/TEAMMATES/teammates/issues/11826). The description of it is "`SubmitFeedbackResponsesAction` is by far the most important and the most used state-changing API of the system, and yet there are no unit tests for it". Functionality affected is (obviously) the testing of the class `SubmitFeedbackResponsesAction`. Code affected directly is `SubmitFeedbackResponsesActionTest`, and indirectly`SubmitFeedbackResponsesAction`. `typicalDataBundle` is also affected directly, which in turn affects a significant part of the other tests since we had to make sure they still work the same way after our modifications.
 
-> **From assignment description:**
-> - Identify an issue you will work on. The issue should be open and have no assignee (or you should get in touch with the assignee to ensure that the work has not been done yet). Please register your issue(s) in the project sheet (see Canvas for the link). Note that each group must work on different issues!
-> - Register the task you are working on the spreadsheet (link is on Canvas). Create an account on the issue tracker of the project, and register yourself as an assignee of that task.
-Note: It is OK if multiple groups choose the same project, but they have to choose different issues/tasks. 
 
 ## Requirements for the new feature or requirements affected by functionality being refactored
 > ***P criterion 4: Requirements related to the functionality are identified and described in a systematic way. Each requirement has a name (ID), title, and description. The description can be one paragraph per requirement.***
@@ -188,3 +181,16 @@ Regarding the Software System alpha, the group’s work covers the part where an
 <a href="https://imgbb.com/"><img src="https://i.ibb.co/3pkhcNr/work.png" alt="work" border="0"></a>
 
 This alpha, the Work alpha, is almost completely covered by the group’s work. The checklist’s different states can be easily tracked to related issues in the group’s project (Kanban) board on GitHub. Thanks to this, and great communication, the work throughout the assignment never halted. The limitations related to this alpha are foremost the state that requires the stakeholder(s) to accept the resulting software system, which is not yet reached. 
+
+## P+ points aimed for
+- *1. The architecture and purpose of the system are presented in an overview of about 1–1.5 pages; consider
+using a diagram. Note: If you manage to improve on existing documentation or fill a gap in the project
+here, please consider making your documentation available to the project; they may be grateful for it!*
+- *3. Relevant test cases (existing tests and updated/new tests related to the refactored code) are traced to
+requirements.*
+- *4. Your patch is clean in that it (a) removes but does not comment out obsolete code and (b) does not
+produce extraneous output that is not required for your task (such as debug output) and (c) does not add unnecessary whitespace changes (such as adding or removing empty lines).*
+- *6. You can argue critically about the benefits, drawbacks, and limitations of your work carried out, in
+the context of current software engineering practice, such as the [SEMAT kernel](http://semat.org/quick-reference-guide) (covering alphas other
+than Team/Way of Working).*
+
