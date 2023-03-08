@@ -328,7 +328,12 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testAccessControl_studentDoesNotExist_shouldThrowEntityNotFoundException() throws Exception {
-        TestData data = new TestData(1, "sessionInTestingWithoutStudent");
+        TestData data = new TestData(1, "session1InCourse1");
+
+        // Delete the students for a typical course:
+        for (var student : logic.getStudentsForCourse(data.courseId)) {
+            logic.deleteStudentCascade(data.courseId, student.getEmail());
+        }
 
         String[] submissionParams = getParams(data.question, Intent.STUDENT_SUBMISSION);
 
@@ -339,7 +344,11 @@ public class SubmitFeedbackResponsesActionTest extends BaseActionTest<SubmitFeed
 
     @Test
     public void testAccessControl_instructorDoesNotExist_shouldThrowEntityNotFoundException() throws Exception {
-        TestData data = new TestData(1, "sessionInTestingWithoutInstructor");
+        TestData data = new TestData(1, "archiveCourse.session1");
+
+        // Delete the only instructor for a typical course:
+        logic.deleteInstructorCascade(data.courseId, "instructorOfArchiveCourse@archiveCourse.tmt");
+
         String[] submissionParams = getParams(data.question, Intent.INSTRUCTOR_SUBMISSION);
 
         ______TS("Instructor does not exist; should throw exception.");
